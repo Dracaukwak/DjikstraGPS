@@ -16,6 +16,15 @@ struct list_node_t {
 };
 
 /**
+ * Construit et initialise un nouveau nœud d'une liste doublement chaînée.
+ * Le paramètre \p data correspond à la donnée à affecter au nouveau nœud.
+ *
+ * @param[in] data
+ * @return le nouveau nœud créé
+ */
+struct list_node_t *new_list_node(void *data);
+
+/**
  * Restitue la donnée du nœud \p node.
  * Le nœud \p node ne peut pas être vide.
  *
