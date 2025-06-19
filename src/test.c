@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "../include/util.h"
 #include "../include/list.h"
-
+#include "../include/dyntable.h"
 
 void runTest(const char *name, void(*testFunc)()) {
     printf("Running test: %s ...\n", name);
@@ -149,6 +149,80 @@ void testListInsertAfter() {
     //view_list(l, viewInt);
 }
 
+void testlistRemove() {
+    int *i1 = malloc(sizeof(int));
+    *i1 = 4;
+    int *i2 = malloc(sizeof(int));
+    *i2 = -9;
+    int *i3 = malloc(sizeof(int));
+    *i3 = 10;
+    struct list_t *l = new_list();
+
+    /* == Test remove first == */
+    list_insert_first(l, i1);
+    assert(list_remove_first(l) == i1);
+    assert(list_is_empty(l));
+    assert(get_list_head(l) == NULL);
+    list_insert_first(l, i1);
+    list_insert_first(l, i2);
+    assert(list_remove_first(l) == i2);
+    assert(get_list_size(l) == 1);
+    assert(get_list_node_data(get_list_tail(l)) == i1);
+    assert(get_list_node_data(get_list_tail(l)) == i1);
+
+    /* == Test remove last == */
+    list_insert_last(l, i2);
+    list_insert_last(l, i3);
+    assert(list_remove_last(l) == i3);
+    assert(get_list_size(l) == 2);
+    assert(get_list_node_data(get_list_tail(l)) == i2);
+    assert(list_remove_last(l) == i2);
+    assert(get_list_size(l) == 1);
+    assert(get_list_node_data(get_list_tail(l)) == i1);
+    assert(list_remove_last(l) == i1);
+    assert(list_is_empty(l));
+    assert(get_list_tail(l) == NULL);
+    assert(get_list_head(l) == NULL);
+
+    /* == Test remove node == */
+    list_insert_last(l, i1);
+    list_insert_last(l, i2);
+    list_insert_last(l, i3);
+    //view_list(l, viewInt);
+    assert(list_remove_node(l, get_successor(get_list_head(l))) == i2);
+    assert(get_list_size(l) == 2);
+    assert(get_successor(get_list_head(l)) == get_list_tail(l));
+    assert(get_predecessor(get_list_tail(l)) == get_list_head(l));
+    //view_list(l, viewInt);
+    assert(list_remove_node(l, get_list_tail(l)) == i3);
+    assert(get_list_size(l) == 1);
+    assert(get_successor(get_list_head(l)) == NULL);
+    //view_list(l,viewInt);
+    assert(list_remove_node(l, get_list_head(l)) == i1);
+    assert(list_is_empty(l));
+    //view_list(l,viewInt);
+}
+
+void testSwapAndExist() {
+    int *i1 = malloc(sizeof(int));
+    *i1 = 4;
+    int *i2 = malloc(sizeof(int));
+    *i2 = -9;
+    int *i3 = malloc(sizeof(int));
+    *i3 = 10;
+    struct list_t *l = new_list();
+    list_insert_first(l, i1);
+    list_insert_last(l, i2);
+    list_insert_after(l, i3, get_list_tail(l));
+    list_swap_nodes_data(get_list_tail(l), get_list_head(l));
+    assert(get_list_node_data(get_list_tail(l)) == i1);
+    assert(get_list_node_data(get_list_head(l)) == i3);
+    assert(list_data_exist(l, i1));
+    //view_list(l,viewInt);
+    list_remove_last(l);
+    assert(!list_data_exist(l, i1));
+}
+
 int main() {
     runTest("utils.c", testUtils);
     runTest("listNode", testListNode);
@@ -157,4 +231,7 @@ int main() {
     runTest("Test insertFirstList", testInsertFirstList);
     runTest("Test listInsertLast", testInsertLastList);
     runTest("Test listInsertAfter", testListInsertAfter);
+    runTest("Test listRemove", testlistRemove);
+    runTest("Test swap et exist", testSwapAndExist);
+    return 0;
 }

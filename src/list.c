@@ -43,7 +43,7 @@ void set_predecessor(struct list_node_t *node, struct list_node_t *newPredecesso
 }
 
 struct list_t *new_list() {
-    struct list_t *newList = calloc(1, sizeof(struct list_t ));
+    struct list_t *newList = calloc(1, sizeof(struct list_t));
     assert(newList);
     return newList;
 }
@@ -164,19 +164,82 @@ void list_insert_after(struct list_t *L, void *data, struct list_node_t *node) {
 
     if (list_is_empty(L)) {
         list_insert_first(L, data);
-    }
-    else if(get_list_tail(L) == node)
-    {
-        list_insert_last(L,data);
+    } else if (get_list_tail(L) == node) {
+        list_insert_last(L, data);
 
-    }
-    else{
+    } else {
         struct list_node_t *newNode = new_list_node(data);
         set_successor(newNode, get_successor(node));
-        set_predecessor(get_successor(node),newNode);
-        set_successor(node,newNode);
-        set_predecessor(newNode,node);
+        set_predecessor(get_successor(node), newNode);
+        set_successor(node, newNode);
+        set_predecessor(newNode, node);
         increase_list_size((L));
     }
 
+}
+
+void *list_remove_first(struct list_t *L) {
+    assert(L);
+    struct list_node_t *delNode = get_list_head(L);
+    void *data = get_list_node_data(delNode);
+    if (get_list_size(L) == 1) {
+        set_list_head(L, NULL);
+        set_list_tail(L, NULL);
+    } else {
+        set_list_head(L, get_successor(get_list_head(L)));
+        set_predecessor(get_list_head(L), NULL);
+    }
+    decrease_list_size(L);
+    free(delNode);
+    return data;
+}
+
+void *list_remove_last(struct list_t *L) {
+    assert(L);
+    struct list_node_t *previousTail = get_list_tail(L);
+    void *data = get_list_node_data(previousTail);
+    if (get_list_size(L) == 1) {
+        set_list_head(L, NULL);
+        set_list_tail(L, NULL);
+    } else {
+        set_list_tail(L, get_predecessor(previousTail));
+        set_successor(get_list_tail(L), NULL);
+    }
+    decrease_list_size(L);
+    free(previousTail);
+    return data;
+
+}
+
+void *list_remove_node(struct list_t *L, struct list_node_t *node) {
+    assert(L);
+    if (node == get_list_head(L)) {
+        return list_remove_first(L);
+    } else if (node == get_list_tail(L)) {
+        return list_remove_last(L);
+    } else {
+        void *data = get_list_node_data(node);
+        set_successor(get_predecessor(node), get_successor(node));
+        set_predecessor(get_successor(node), get_predecessor(node));
+        decrease_list_size(L);
+        free(node);
+        return data;
+    }
+}
+
+void list_swap_nodes_data(struct list_node_t *node1, struct list_node_t *node2) {
+    assert(node1 && node2);
+    void *aux = get_list_node_data(node1);
+    set_list_node_data(node1, get_list_node_data(node2));
+    set_list_node_data(node2, aux);
+}
+
+int list_data_exist(struct list_t *L, void *data) {
+    assert(L);
+    for (struct list_node_t *it = get_list_head(L); it != NULL; it = get_successor(it)) {
+        if (get_list_node_data(it) == data) {
+            return 1;
+        }
+    }
+    return 0;
 }
