@@ -19,6 +19,7 @@ void viewInt(const void *i) {
 }
 
 void freeInt(void *i) {
+    //printf("boum\n");
     free((int *) i);
 }
 

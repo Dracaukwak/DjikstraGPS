@@ -43,7 +43,7 @@ void set_predecessor(struct list_node_t *node, struct list_node_t *newPredecesso
 }
 
 struct list_t *new_list() {
-    struct list_t *newList = calloc(1, sizeof(struct list_t *));
+    struct list_t *newList = calloc(1, sizeof(struct list_t ));
     assert(newList);
     return newList;
 }
@@ -89,13 +89,94 @@ void set_list_size(struct list_t *L, unsigned int newSize) {
 }
 
 
-void set_list_head(struct list_t *L, struct list_node_t *newHead){
+void set_list_head(struct list_t *L, struct list_node_t *newHead) {
     assert(L);
     L->head = newHead;
 }
 
 
-void set_list_tail(struct list_t *L, struct list_node_t *newTail){
+void set_list_tail(struct list_t *L, struct list_node_t *newTail) {
     assert(L);
     L->tail = newTail;
+}
+
+void delete_list(struct list_t *L, void (*freeData)(void *)) {
+    assert(L);
+    if (freeData) {
+        for (struct list_node_t *it = get_list_head(L); it != NULL;) {
+            freeData(get_list_node_data(it));
+            struct list_node_t *aux = it;
+            it = get_successor(it);
+            free(aux);
+        }
+    } else {
+        for (struct list_node_t *it = get_list_head(L); it != NULL;) {
+            struct list_node_t *aux = it;
+            it = get_successor(it);
+            free(aux);
+        }
+    }
+    free(L);
+}
+
+void view_list(const struct list_t *L, void (*viewData)(const void *)) {
+    assert(L);
+    printf("Nombre de noeud de la liste : %u\n", get_list_size(L));
+    printf("(");
+    for (struct list_node_t *it = get_list_head(L); it != NULL; it = get_successor(it)) {
+        viewData(get_list_node_data(it));
+        if (get_successor(it)) {
+            printf(", ");
+        }
+
+    }
+    printf(")\n");
+}
+
+void list_insert_first(struct list_t *L, void *data) {
+    assert(L);
+    struct list_node_t *newHead = new_list_node(data);
+    if (list_is_empty(L)) {
+        set_list_tail(L, newHead);
+    } else {
+        set_successor(newHead, get_list_head(L));
+        set_predecessor(get_list_head(L), newHead);
+    }
+    set_list_head(L, newHead);
+    increase_list_size(L);
+}
+
+void list_insert_last(struct list_t *L, void *data) {
+    assert(L);
+    struct list_node_t *newTail = new_list_node(data);
+    if (list_is_empty(L)) {
+        set_list_head(L, newTail);
+    } else {
+        set_predecessor(newTail, get_list_tail(L));
+        set_successor(get_list_tail(L), newTail);
+    }
+    set_list_tail(L, newTail);
+    increase_list_size(L);
+}
+
+void list_insert_after(struct list_t *L, void *data, struct list_node_t *node) {
+    assert(L);
+
+    if (list_is_empty(L)) {
+        list_insert_first(L, data);
+    }
+    else if(get_list_tail(L) == node)
+    {
+        list_insert_last(L,data);
+
+    }
+    else{
+        struct list_node_t *newNode = new_list_node(data);
+        set_successor(newNode, get_successor(node));
+        set_predecessor(get_successor(node),newNode);
+        set_successor(node,newNode);
+        set_predecessor(newNode,node);
+        increase_list_size((L));
+    }
+
 }

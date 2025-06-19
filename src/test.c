@@ -64,14 +64,97 @@ void testGetteurAndSetteurList() {
     assert(get_list_tail(l) != node1);
     assert(get_list_head(l) != node2);
     assert(get_list_tail(l) == node2);
+    assert(!list_is_empty(l));
 
 
     freeInt(i1);
     freeInt(i2);
 }
 
+void testViewAndDeleteList() {
+    int *i1 = malloc(sizeof(int));
+    *i1 = 4;
+    int *i2 = malloc(sizeof(int));
+    *i2 = -9;
+    struct list_t *l = new_list();
+    struct list_node_t *node1 = new_list_node(i1);
+    struct list_node_t *node2 = new_list_node(i2);
+    //view_list(l, viewInt);
+    set_list_head(l, node1);
+    set_successor(node1, node2);
+    set_list_tail(l, node2);
+
+    //view_list(l, viewInt);
+    delete_list(l, freeInt);
+
+
+}
+
+void testInsertFirstList() {
+    int *i1 = malloc(sizeof(int));
+    *i1 = 4;
+    int *i2 = malloc(sizeof(int));
+    *i2 = -9;
+    struct list_t *l = new_list();
+    list_insert_first(l, i1);
+    assert(get_list_size(l) == 1);
+    assert(get_list_node_data(get_list_head(l)) == i1);
+    assert(get_list_node_data(get_list_tail(l)) == i1);
+    list_insert_first(l, i2);
+    assert(get_list_size(l) == 2);
+    assert(get_list_node_data(get_list_head(l)) == i2);
+    assert(get_list_node_data(get_list_tail(l)) == i1);
+    assert(get_successor(get_list_head(l)) == get_list_tail(l));
+    assert(get_predecessor(get_list_tail(l)) == get_list_head(l));
+    delete_list(l, freeInt);
+}
+
+void testInsertLastList() {
+    int *i1 = malloc(sizeof(int));
+    *i1 = 4;
+    int *i2 = malloc(sizeof(int));
+    *i2 = -9;
+    struct list_t *l = new_list();
+    list_insert_last(l, i1);
+    assert(get_list_size(l) == 1);
+    assert(get_list_node_data(get_list_head(l)) == i1);
+    assert(get_list_node_data(get_list_tail(l)) == i1);
+    list_insert_last(l, i2);
+    assert(get_list_node_data(get_list_tail(l)) != i1);
+    assert(get_list_node_data(get_list_head(l)) == i1);
+    assert(get_list_node_data(get_list_tail(l)) == i2);
+    assert(get_list_size(l) == 2);
+    assert(get_predecessor(get_list_tail(l)) == get_list_head(l));
+    assert(get_successor(get_list_head(l)) == get_list_tail(l));
+    delete_list(l, freeInt);
+}
+
+void testListInsertAfter() {
+    int *i1 = malloc(sizeof(int));
+    *i1 = 4;
+    int *i2 = malloc(sizeof(int));
+    *i2 = -9;
+    int *i3 = malloc(sizeof(int));
+    *i3 = 10;
+    struct list_t *l = new_list();
+    list_insert_first(l, i1);
+    list_insert_after(l, i2, get_list_head(l));
+    assert(get_list_size(l) == 2);
+    assert(get_list_node_data(get_list_tail(l)) == i2);
+    assert(get_successor(get_list_head(l)) == get_list_tail(l));
+    assert(get_predecessor(get_list_tail(l)) == get_list_head(l));
+    list_insert_after(l, i3, get_list_head(l));
+    assert(get_list_size(l) == 3);
+    assert(get_successor(get_list_head(l)) == get_predecessor(get_list_tail(l)));
+    //view_list(l, viewInt);
+}
+
 int main() {
     runTest("utils.c", testUtils);
     runTest("listNode", testListNode);
-    runTest("liste getteurAndsetteur",testGetteurAndSetteurList);
+    runTest("liste getteurAndsetteur", testGetteurAndSetteurList);
+    runTest("test deleteList", testViewAndDeleteList);
+    runTest("Test insertFirstList", testInsertFirstList);
+    runTest("Test listInsertLast", testInsertLastList);
+    runTest("Test listInsertAfter", testListInsertAfter);
 }
