@@ -223,6 +223,17 @@ void testSwapAndExist() {
     assert(!list_data_exist(l, i1));
 }
 
+void testDyntable() {
+    int *i1 = malloc(sizeof(int));
+    *i1 = 7;
+    struct dyn_table_t *table = new_dyn_table();
+    assert(table->size == 1 && table->used == 0);
+    table->T[0] = i1;
+    table->used = 1;
+    assert(get_dyn_table_data(table, 0) == i1);
+    freeInt(i1);
+}
+
 int main() {
     runTest("utils.c", testUtils);
     runTest("listNode", testListNode);
@@ -233,5 +244,6 @@ int main() {
     runTest("Test listInsertAfter", testListInsertAfter);
     runTest("Test listRemove", testlistRemove);
     runTest("Test swap et exist", testSwapAndExist);
+    runTest("Test dyntable", testDyntable);
     return 0;
 }
