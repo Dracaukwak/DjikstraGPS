@@ -37,18 +37,65 @@ void set_successor(struct list_node_t *node, struct list_node_t *newSuccessor) {
     node->successor = newSuccessor;
 }
 
-void set_predecessor(struct list_node_t * node, struct list_node_t * newPredecessor){
+void set_predecessor(struct list_node_t *node, struct list_node_t *newPredecessor) {
     assert(node);
     node->predecessor = newPredecessor;
 }
 
-struct list_t * new_list(){
-    struct list_t * newList = calloc(1, sizeof(struct list_t*));
+struct list_t *new_list() {
+    struct list_t *newList = calloc(1, sizeof(struct list_t *));
     assert(newList);
     return newList;
 }
 
-int list_is_empty(const struct list_t * L){
+int list_is_empty(const struct list_t *L) {
     assert(L);
-    return (unsigned int)L->size;
+    return L->size == 0;
+}
+
+unsigned int get_list_size(const struct list_t *L) {
+    assert(L);
+    return L->size;
+}
+
+
+struct list_node_t *get_list_head(const struct list_t *L) {
+    assert(L);
+    return L->head;
+}
+
+
+struct list_node_t *get_list_tail(const struct list_t *L) {
+    assert(L);
+    return L->tail;
+}
+
+
+void increase_list_size(struct list_t *L) {
+    assert(L);
+    L->size++;
+}
+
+
+void decrease_list_size(struct list_t *L) {
+    assert(L);
+    L->size--;
+}
+
+
+void set_list_size(struct list_t *L, unsigned int newSize) {
+    assert(L && newSize >= 0);
+    L->size = newSize;
+}
+
+
+void set_list_head(struct list_t *L, struct list_node_t *newHead){
+    assert(L);
+    L->head = newHead;
+}
+
+
+void set_list_tail(struct list_t *L, struct list_node_t *newTail){
+    assert(L);
+    L->tail = newTail;
 }
