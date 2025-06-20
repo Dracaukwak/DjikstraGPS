@@ -49,7 +49,7 @@ unsigned int get_dyn_table_size(const struct dyn_table_t * table);
  * Restitue le nombre de cases utilisées du tableau dynamique \p table.
  *
  * @param[in] table
- * @returnle le nombre de cases utilisées du tableau  \p table.
+ * @return le nombre de cases utilisées du tableau  \p table.
  */
 unsigned int get_dyn_table_used(const struct dyn_table_t * table);
 

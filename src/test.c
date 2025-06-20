@@ -4,12 +4,21 @@
 #include "../include/util.h"
 #include "../include/list.h"
 #include "../include/dyntable.h"
+#include "../include/tree.h"
+
+void afficheEtoile() {
+    int n = 10;
+    for (int i = 0; i < n; i++) {
+        printf("*");
+    }
+    printf("\n");
+}
 
 void runTest(const char *name, void(*testFunc)()) {
     printf("Running test: %s ...\n", name);
     fflush(stdout);
     testFunc();
-    printf("%s PASSED\n", name);
+    printf("%s PASSED\n\n", name);
 }
 
 void testUtils() {
@@ -223,7 +232,7 @@ void testSwapAndExist() {
     assert(!list_data_exist(l, i1));
 }
 
-void testDyntable() {
+void testDyntableCreation() {
     int *i1 = malloc(sizeof(int));
     *i1 = 7;
     struct dyn_table_t *table = new_dyn_table();
@@ -232,6 +241,77 @@ void testDyntable() {
     table->used = 1;
     assert(get_dyn_table_data(table, 0) == i1);
     freeInt(i1);
+}
+
+void testDyntableGetteurAndSetteur() {
+    int *i1 = malloc(sizeof(int));
+    *i1 = 7;
+    int *i2 = malloc(sizeof(int));
+    *i2 = -9;
+    struct dyn_table_t *table = new_dyn_table();
+    set_dyn_table_data(table, 0, i1);
+    increase_dyn_table_used(table);
+    assert(get_dyn_table_used(table) == 1 && get_dyn_table_size(table) == 1);
+    assert(get_dyn_table_data(table, 0) == i1);
+    assert(dyn_table_is_full(table));
+
+    set_dyn_table_size(table, 2);
+    increase_dyn_table_used(table);
+    set_dyn_table_data(table, 1, i2);
+    assert(get_dyn_table_used(table) == 2 && get_dyn_table_size(table) == 2);
+    //view_dyn_table(table, viewInt);
+    assert(get_dyn_table_data(table, 1) == i2);
+    assert(dyn_table_is_full(table));
+    set_dyn_table_size(table, 8);
+    assert(!dyn_table_is_quasi_empty(table));
+    set_dyn_table_size(table, 12);
+    assert(dyn_table_is_quasi_empty(table));
+    decrease_dyn_table_used(table);
+    assert(get_dyn_table_used(table) == 1);
+    //view_dyn_table(table, viewInt);
+    delete_dyn_table(table, freeInt);
+}
+
+void testInsertEtRemoveDyntable() {
+    int *i1 = malloc(sizeof(int));
+    *i1 = 7;
+    int *i2 = malloc(sizeof(int));
+    *i2 = -9;
+    int *i3 = malloc(sizeof(int));
+    *i3 = 10;
+    struct dyn_table_t *table = new_dyn_table();
+    dyn_table_insert(table, i1);
+    assert(get_dyn_table_used(table) == 1);
+    assert(get_dyn_table_data(table, 0) == i1);
+    assert(get_dyn_table_size(table) == 1);
+    dyn_table_insert(table, i2);
+    assert(get_dyn_table_used(table) == 2);
+    assert(get_dyn_table_data(table, 1) == i2);
+    assert(get_dyn_table_size(table) == 2);
+    dyn_table_insert(table, i3);
+    assert(get_dyn_table_used(table) == 3);
+    assert(get_dyn_table_data(table, 2) == i3);
+    assert(get_dyn_table_size(table) == 4);
+    dyn_table_swap_nodes_data(table, 1, 2);
+    assert(get_dyn_table_data(table, 1) == i3);
+    assert(get_dyn_table_data(table, 2) == i2);
+    //view_dyn_table(table,viewInt);
+    dyn_table_swap_nodes_data(table, 1, 2);
+    assert(get_dyn_table_data(table, 1) == i2);
+    assert(get_dyn_table_data(table, 2) == i3);
+    set_dyn_table_size(table, 16);
+    assert(get_dyn_table_size(table) == 16);
+    assert(dyn_table_remove(table) == i3);
+    assert(get_dyn_table_used(table) == 2);
+    assert(get_dyn_table_size(table) == 8);
+    assert(dyn_table_remove(table) == i2);
+    //view_dyn_table(table, viewInt);
+    assert(get_dyn_table_used(table) == 1);
+    assert(get_dyn_table_size(table) == 4);
+    assert(dyn_table_remove(table) == i1);
+    assert(get_dyn_table_used(table) == 0);
+    assert(get_dyn_table_size(table) == 2);
+    //view_dyn_table(table, viewInt);
 }
 
 int main() {
@@ -244,6 +324,8 @@ int main() {
     runTest("Test listInsertAfter", testListInsertAfter);
     runTest("Test listRemove", testlistRemove);
     runTest("Test swap et exist", testSwapAndExist);
-    runTest("Test dyntable", testDyntable);
+    runTest("Test dyntableCreation", testDyntableCreation);
+    runTest("Test dyntable getteur et setteur", testDyntableGetteurAndSetteur);
+    runTest("testInsertEtRemoveDyntable", testInsertEtRemoveDyntable);
     return 0;
 }
