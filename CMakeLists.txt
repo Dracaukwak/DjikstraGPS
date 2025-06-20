@@ -10,4 +10,5 @@ add_executable(test src/test.c
         src/list.c
         src/util.c
         src/dyntable.c
+        src/tree.c
 )

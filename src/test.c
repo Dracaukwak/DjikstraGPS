@@ -314,6 +314,15 @@ void testInsertEtRemoveDyntable() {
     //view_dyn_table(table, viewInt);
 }
 
+void testGetteurEtSetteurTree() {
+    int *i1 = calloc(1, sizeof(int));
+    *i1 = 13;
+    struct tree_node_t *node = new_tree_node(i1);
+    assert(get_tree_node_data(node) == i1);
+    freeInt(i1);
+
+}
+
 int main() {
     runTest("utils.c", testUtils);
     runTest("listNode", testListNode);
@@ -327,5 +336,6 @@ int main() {
     runTest("Test dyntableCreation", testDyntableCreation);
     runTest("Test dyntable getteur et setteur", testDyntableGetteurAndSetteur);
     runTest("testInsertEtRemoveDyntable", testInsertEtRemoveDyntable);
+    runTest("testGetteurEtSetteurTree", testGetteurEtSetteurTree);
     return 0;
 }
