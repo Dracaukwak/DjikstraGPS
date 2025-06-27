@@ -50,8 +50,89 @@ void set_right(struct tree_node_t* node, struct tree_node_t* newRight)
     node->right = newRight;
 }
 
+
 void set_tree_node_data(struct tree_node_t* node, void* newData)
 {
     assert(node);
     node->data = newData;
+}
+
+struct tree_t* new_tree()
+{
+    struct tree_t* tree = calloc(1, sizeof(struct tree_t));
+    assert(tree);
+    return tree;
+}
+
+int tree_is_empty(const struct tree_t* T)
+{
+    assert(T);
+    return T->size == 0;
+}
+
+unsigned int get_tree_size(const struct tree_t* T)
+{
+    assert(T);
+    return T->size;
+}
+
+
+struct tree_node_t* get_tree_root(const struct tree_t* T)
+{
+    assert(T);
+    return T->root;
+}
+
+void increase_tree_size(struct tree_t* T)
+{
+    assert(T);
+    T->size++;
+}
+
+void decrease_tree_size(struct tree_t* T)
+{
+    assert(T);
+    T->size--;
+}
+
+void set_tree_root(struct tree_t* T, struct tree_node_t* newRoot)
+{
+    assert(T);
+    T->root = newRoot;
+}
+
+void free_subtree(struct tree_node_t* node, void (*freeData)(void*))
+{
+    if (node != NULL)
+    {
+        free_subtree(get_left(node), freeData);
+        free_subtree(get_right(node), freeData);
+        if (freeData)
+        {
+            freeData(get_tree_node_data(node));
+        }
+        free(node);
+    }
+}
+
+void delete_tree(struct tree_t* T, void (*freeData)(void*))
+{
+    assert(T);
+    free_subtree(get_tree_root(T), freeData);
+    free(T);
+    printf("Arbre detruit !\n");
+}
+
+void view_preorder(const struct tree_node_t* node, void (*viewData)(const void*))
+{
+}
+
+
+void view_inorder(const struct tree_node_t* node, void (*viewData)(const void*))
+{
+}
+
+
+void view_postorder(const struct tree_node_t* node, void (*viewData)(const void*))
+{
 }
