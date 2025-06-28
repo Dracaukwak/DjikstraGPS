@@ -353,15 +353,46 @@ void testGetteurEtSetteurNodeTree()
 
 void testGetteurAndSetteurTree()
 {
-    int * i1 = malloc(sizeof(int));
+    int* i1 = malloc(sizeof(int));
     *i1 = 4;
-    struct tree_node_t * node1 = new_tree_node(i1);
-    struct tree_t * t = new_tree();
-    set_tree_root(t,node1);
+    struct tree_node_t* node1 = new_tree_node(i1);
+    struct tree_t* t = new_tree();
+    set_tree_root(t, node1);
     increase_tree_size(t);
     assert(get_tree_size(t) == 1);
     assert(get_tree_root(t)== node1);
-    delete_tree(t,freeInt);
+    delete_tree(t, freeInt);
+}
+
+void testViewsTree()
+{
+    int* i1 = calloc(1, sizeof(int));
+    *i1 = 1;
+    int* i2 = calloc(1, sizeof(int));
+    *i2 = 2;
+    int* i3 = calloc(1, sizeof(int));
+    *i3 = 3;
+    int* i4 = calloc(1, sizeof(int));
+    *i4 = 4;
+    struct tree_node_t* node1 = new_tree_node(i1);
+    struct tree_node_t* node2 = new_tree_node(i2);
+    struct tree_node_t* node3 = new_tree_node(i3);
+    struct tree_node_t* node4 = new_tree_node(i4);
+    struct tree_t* t = new_tree();
+
+    set_tree_root(t, node1);
+    set_left(get_tree_root(t), node2);
+    set_right(get_tree_root(t), node3);
+    set_left(node2, node4);
+    view_preorder(get_tree_root(t), viewInt);
+    view_inorder(get_tree_root(t),viewInt);
+    view_postorder(get_tree_root(t),viewInt);
+    printf("\n");
+    view_tree(t,viewInt,0);
+    view_tree(t,viewInt,1);
+    view_tree(t,viewInt,2);
+    view_tree(t,viewInt,3);
+    delete_tree(t, freeInt);
 }
 
 int main()
@@ -379,6 +410,7 @@ int main()
     runTest("Test dyntable getteur et setteur", testDyntableGetteurAndSetteur);
     runTest("testInsertEtRemoveDyntable", testInsertEtRemoveDyntable);
     runTest("testGetteurEtSetteurNodeTree", testGetteurEtSetteurNodeTree);
-    runTest("testGetteurAndSetteurTree",testGetteurAndSetteurTree);
+    runTest("testGetteurAndSetteurTree", testGetteurAndSetteurTree);
+    runTest("Test views tree", testViewsTree);
     return 0;
 }

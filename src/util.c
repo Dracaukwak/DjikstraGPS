@@ -14,7 +14,7 @@ void viewInt(const void *i) {
     if (i == NULL) {
         printf("NULL");
     } else {
-        printf("%d", *((int *) i));
+        printf("%d ", *((int *) i));
     }
 }
 

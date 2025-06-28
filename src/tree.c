@@ -125,14 +125,57 @@ void delete_tree(struct tree_t* T, void (*freeData)(void*))
 
 void view_preorder(const struct tree_node_t* node, void (*viewData)(const void*))
 {
+    if (node != NULL)
+    {
+        viewData(get_tree_node_data(node));
+        view_preorder(get_left(node), viewData);
+        view_preorder(get_right(node), viewData);
+    }
 }
 
 
 void view_inorder(const struct tree_node_t* node, void (*viewData)(const void*))
 {
+    if (node != NULL)
+    {
+        view_inorder(get_left(node), viewData);
+        viewData(get_tree_node_data(node));
+        view_inorder(get_right(node), viewData);
+    }
 }
 
 
 void view_postorder(const struct tree_node_t* node, void (*viewData)(const void*))
 {
+    if (node != NULL)
+    {
+        view_postorder(get_left(node), viewData);
+        view_postorder(get_right(node), viewData);
+        viewData(get_tree_node_data(node));
+    }
+}
+
+void view_tree(const struct tree_t* T, void (*viewData)(const void*), int order)
+{
+    assert(T);
+    switch (order)
+    {
+    case 0:
+        printf("Ordre Prefixe\n");
+        view_preorder(get_tree_root(T), viewData);
+        printf("\n");
+        break;
+    case 1:
+        printf("Ordre Postfixe\n");
+        view_postorder(get_tree_root(T), viewData);
+        printf("\n");
+        break;
+    case 2:
+        printf("Ordre Infixe\n");
+        view_inorder(get_tree_root(T), viewData);
+        printf("\n");
+        break;
+    default:
+        printf("Ordre inconnu\n");
+    }
 }
