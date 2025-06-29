@@ -135,11 +135,27 @@ struct dyn_table_t* get_heap_dictionary(const struct heap_t* H)
 unsigned int list_heap_insert(struct heap_t * H, unsigned long key, void * data)
 {
     assert(H);
-    struct heap_node_t * newNode = new_heap_node(key,data);
-    struct list_t* heapList = get_heap(H);
-    struct dyntable_t * dict = get_heap_dictionary(H);
+    struct list_t * heapList = get_heap(H);
+    struct heap_node_t * newHeapNode = new_heap_node(key,data);
+    struct list_node_t * listNode = new_list_node(newHeapNode);
+    if (list_is_empty(heapList) || key < get_heap_node_key(get_list_node_data(get_list_head(heapList))))
+    {
+        list_insert_first(heapList,newHeapNode);
+    }
+    else if (key >= get_heap_node_key(get_list_node_data(get_list_tail(heapList))))
+    {
+        list_insert_last(heapList,newHeapNode);
+    }
+    else
+    {
+        struct list_node_t * it = get_list_head(heapList);
+        while (it != NULL && key > get_heap_node_key(get_list_node_data(it)) )
+        {
+            it = get_successor(it);
 
-    return 0;
+        }
+        list_insert_after(heapList,newHeapNode,get_predecessor(it));
+    }
 }
 
 void view_list_heap(const struct heap_t * H, void (*viewHeapNode)(const void *))
