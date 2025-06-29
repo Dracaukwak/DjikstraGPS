@@ -86,13 +86,6 @@ void set_heap_node_data(struct heap_node_t * node, void * newData);
 void set_heap_node_dict_position(struct heap_node_t * node, unsigned int newPosition);
 
 /**
- * Affiche le heap node
- * L'élément data est affiché grâce à la fonction viewData
- * @param node
- * @param viewData
- */
-void view_heap_node(struct heap_node_t* node, void (*viewData)(const void *));
-/**
  * Le tas est une structure qui contient les attributs suivants.
  * (+) La structure de données \p heap qui implémente le tas.
  * (+) Le dictionnaire \p dict : chaque élément du tas correspond à une position

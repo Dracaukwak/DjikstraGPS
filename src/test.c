@@ -543,26 +543,29 @@ void testHeapBourrin()
 {
     int* i1 = calloc(1, sizeof(int));
     *i1 = 3;
-    unsigned long key1 = 2;
+    unsigned long key1 = 1;
     unsigned int dictPos1 = 0;
     struct heap_node_t * heapNode1 = new_heap_node(key1,i1);
 
     int* i2 = calloc(1, sizeof(int));
     *i2 = 7;
-    unsigned long key2 = 4;
+    unsigned long key2 = 2;
     unsigned int dictPos2 = 1;
     struct heap_node_t * heapNode2 = new_heap_node(key2,i2);
 
     int* i3 = calloc(1, sizeof(int));
     *i3 = 9;
-    unsigned long key3 = 1;
+    unsigned long key3 = 3;
     unsigned int dictPos3 = 0;
-    struct heap_node_t * heapNode = new_heap_node(key3,i3);
+    struct heap_node_t * heapNode3 = new_heap_node(key3,i3);
 
     int heapListType = 2;
     struct heap_t * H = new_heap(heapListType);
     struct list_t *heapList = get_heap(H);
-    list_insert_first(heapList,heapNode);
+    list_insert_first(heapList,heapNode1);
+    view_list_heap(H,viewInt);
+    list_insert_first(heapList,heapNode2);
+    view_list_heap(H,viewInt);
 
 }
 

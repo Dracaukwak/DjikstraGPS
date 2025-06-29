@@ -62,16 +62,6 @@ void set_heap_node_dict_position(struct heap_node_t* node, unsigned int newPosit
     node->dict_position = newPosition;
 }
 
-void view_heap_node(struct heap_node_t* node, void (*viewData)(const void *))
-{
-    assert(node);
-    printf("********************************* == HEAP NODE == ***********************************\n");
-    printf("Data : ");
-    viewData(get_heap_node_data(node));
-    printf("\n");
-    printf("Dict Pos = %d\nKey = %d\n",get_heap_node_dict_position(node),get_heap_node_key(node));
-    printf("********************************** == == ************************************************\n");
-}
 
 // type =
 //    0 (Dynamic Table Heap)
@@ -112,7 +102,7 @@ struct heap_t* new_heap(int type)
         // H->heap_extract_min = list_heap_extract_min;
         // H->heap_increase_priority = list_heap_increase_priority;
         // H->heap_is_empty = list_heap_is_empty;
-        // H->view_heap = view_list_heap;
+        H->view_heap = view_list_heap;
         // H->delete_heap = delete_list_heap;
         break;
     default:
@@ -150,4 +140,23 @@ unsigned int list_heap_insert(struct heap_t * H, unsigned long key, void * data)
     struct dyntable_t * dict = get_heap_dictionary(H);
 
     return 0;
+}
+
+void view_list_heap(const struct heap_t * H, void (*viewHeapNode)(const void *))
+{
+    assert(H);
+    struct list_t * heapList = get_heap(H);
+    printf("Nombre de noeud dans la heap list %u\n",get_list_size(heapList));
+    for (const struct list_node_t * it = get_list_head(heapList);it != NULL; it = get_successor(it))
+    {
+        const struct heap_node_t * node = get_list_node_data(it);
+        printf("********************************* == HEAP NODE == ***********************************\n");
+        printf("Data : ");
+        viewHeapNode(get_heap_node_data(node));
+
+        printf("\n");
+        printf("Dict Pos = %d\nKey = %d\n",get_heap_node_dict_position(node),get_heap_node_key(node));
+        printf("********************************** == == ************************************************\n");
+    }
+    printf("\n");
 }
