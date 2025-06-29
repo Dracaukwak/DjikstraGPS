@@ -252,3 +252,36 @@ void* tree_remove(struct tree_t* T)
     return data;
 
 }
+
+struct tree_node_t *get_tree_node_at_position(struct tree_node_t *node, unsigned int position)
+{
+    if (position == 0)
+    {
+        return node;
+    }
+    else
+    {
+        int hauteur = (int)log2(position+1);
+        int nbNoeudDernierNiveau = (int)pow(2,hauteur);
+        int millieu = nbNoeudDernierNiveau/2;
+        int index = position - (nbNoeudDernierNiveau -1);
+
+        if (index < millieu)
+        {
+            return get_tree_node_at_position(get_left(node),position - pow(2,hauteur-1));
+        }
+        else
+        {
+            return get_tree_node_at_position(get_right(node),position - pow(2,hauteur));
+
+        }
+    }
+}
+
+struct tree_node_t* tree_find_node(struct tree_t* T, unsigned int position)
+{
+    assert(T);
+    assert(get_tree_root(T));
+    assert(position < get_tree_size(T));
+    return get_tree_node_at_position(get_tree_root(T),position);
+}
