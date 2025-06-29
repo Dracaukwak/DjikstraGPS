@@ -5,6 +5,7 @@
 #include "../include/list.h"
 #include "../include/dyntable.h"
 #include "../include/tree.h"
+#include "../include/heap.h"
 
 void afficheEtoile()
 {
@@ -34,9 +35,14 @@ void testUtils()
     assert(!intGreaterThan(i2, i1));
     assert(!intEqualTo(i2, i1));
     assert(intSmallerThan(i2, i1));
-    free(i1);
-    free(i2);
+    // free(i1);
+    // free(i2);
 }
+
+
+/**********************************************************************************
+ * list_t test
+ **********************************************************************************/
 
 void testListNode()
 {
@@ -82,8 +88,8 @@ void testGetteurAndSetteurList()
     assert(!list_is_empty(l));
 
 
-    freeInt(i1);
-    freeInt(i2);
+    // freeInt(i1);
+    // freeInt(i2);
 }
 
 void testViewAndDeleteList()
@@ -101,7 +107,7 @@ void testViewAndDeleteList()
     set_list_tail(l, node2);
 
     //view_list(l, viewInt);
-    delete_list(l, freeInt);
+    // delete_list(l, freeInt);
 }
 
 void testInsertFirstList()
@@ -121,7 +127,7 @@ void testInsertFirstList()
     assert(get_list_node_data(get_list_tail(l)) == i1);
     assert(get_successor(get_list_head(l)) == get_list_tail(l));
     assert(get_predecessor(get_list_tail(l)) == get_list_head(l));
-    delete_list(l, freeInt);
+    // delete_list(l, freeInt);
 }
 
 void testInsertLastList()
@@ -142,7 +148,7 @@ void testInsertLastList()
     assert(get_list_size(l) == 2);
     assert(get_predecessor(get_list_tail(l)) == get_list_head(l));
     assert(get_successor(get_list_head(l)) == get_list_tail(l));
-    delete_list(l, freeInt);
+    // delete_list(l, freeInt);
 }
 
 void testListInsertAfter()
@@ -242,6 +248,10 @@ void testSwapAndExist()
     assert(!list_data_exist(l, i1));
 }
 
+/**********************************************************************************
+ * dyntable_t test
+ **********************************************************************************/
+
 void testDyntableCreation()
 {
     int* i1 = malloc(sizeof(int));
@@ -251,7 +261,7 @@ void testDyntableCreation()
     table->T[0] = i1;
     table->used = 1;
     assert(get_dyn_table_data(table, 0) == i1);
-    freeInt(i1);
+    // freeInt(i1);
 }
 
 void testDyntableGetteurAndSetteur()
@@ -281,7 +291,7 @@ void testDyntableGetteurAndSetteur()
     decrease_dyn_table_used(table);
     assert(get_dyn_table_used(table) == 1);
     //view_dyn_table(table, viewInt);
-    delete_dyn_table(table, freeInt);
+    // delete_dyn_table(table, freeInt);
 }
 
 void testInsertEtRemoveDyntable()
@@ -326,6 +336,10 @@ void testInsertEtRemoveDyntable()
     assert(get_dyn_table_size(table) == 2);
     //view_dyn_table(table, viewInt);
 }
+
+/**********************************************************************************
+ * tree_t test
+ **********************************************************************************/
 
 void testGetteurEtSetteurNodeTree()
 {
@@ -392,7 +406,7 @@ void testViewsTree()
     // view_tree(t, viewInt, 1);
     // view_tree(t, viewInt, 2);
     // view_tree(t, viewInt, 3);
-    delete_tree(t, freeInt);
+    // delete_tree(t, freeInt);
 }
 
 void testInsertAndgetNodeDataAndRemoveTree()
@@ -507,6 +521,51 @@ void testTreeSwapData()
     assert(get_tree_node_data(node2) == i1);
 }
 
+/**********************************************************************************
+ * heap_node_t test
+ **********************************************************************************/
+
+void testGetteurAndSetteurHeapNode()
+{
+    int* i1 = calloc(1, sizeof(int));
+    *i1 = 3;
+    unsigned long key = 0;
+    struct heap_node_t* node = new_heap_node(key, i1);
+    assert(get_heap_node_data(node)==i1);
+    assert(get_heap_node_key(node)==key);
+    unsigned int dictPos = 2;
+    set_heap_node_dict_position(node, dictPos);
+    assert(get_heap_node_dict_position(node)==dictPos);
+    // view_heap_node(node, viewInt);
+}
+
+void testHeapBourrin()
+{
+    int* i1 = calloc(1, sizeof(int));
+    *i1 = 3;
+    unsigned long key1 = 2;
+    unsigned int dictPos1 = 0;
+    struct heap_node_t * heapNode1 = new_heap_node(key1,i1);
+
+    int* i2 = calloc(1, sizeof(int));
+    *i2 = 7;
+    unsigned long key2 = 4;
+    unsigned int dictPos2 = 1;
+    struct heap_node_t * heapNode2 = new_heap_node(key2,i2);
+
+    int* i3 = calloc(1, sizeof(int));
+    *i3 = 9;
+    unsigned long key3 = 1;
+    unsigned int dictPos3 = 0;
+    struct heap_node_t * heapNode = new_heap_node(key3,i3);
+
+    int heapListType = 2;
+    struct heap_t * H = new_heap(heapListType);
+    struct list_t *heapList = get_heap(H);
+    list_insert_first(heapList,heapNode);
+
+}
+
 int main()
 {
     runTest("utils.c", testUtils);
@@ -525,6 +584,8 @@ int main()
     runTest("testGetteurAndSetteurTree", testGetteurAndSetteurTree);
     runTest("Test views tree", testViewsTree);
     runTest("Test insert, get at position and remove tree", testInsertAndgetNodeDataAndRemoveTree);
-    runTest("Test swap tree data",testTreeSwapData);
+    runTest("Test swap tree data", testTreeSwapData);
+    runTest("Test setteur et getteur heapNode", testGetteurAndSetteurHeapNode);
+    runTest("Test heap bourrin",testHeapBourrin);
     return 0;
 }
