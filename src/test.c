@@ -346,9 +346,9 @@ void testGetteurEtSetteurNodeTree()
     assert(get_right(node1) ==node2);
     assert(get_tree_node_data(get_left(node1)) == i3);
     assert(get_tree_node_data(node2) ==i1);
-    freeInt(i1);
-    freeInt(i2);
-    freeInt(i3);
+    // freeInt(i1);
+    // freeInt(i2);
+    // freeInt(i3);
 }
 
 void testGetteurAndSetteurTree()
@@ -494,6 +494,18 @@ void testInsertAndgetNodeDataAndRemoveTree()
     // view_tree(t, viewInt, 2);
 }
 
+void testTreeSwapData()
+{
+    int* i1 = malloc(sizeof(int));
+    int* i2 = malloc(sizeof(int));
+    struct tree_node_t* node1 = new_tree_node(i1);
+    struct tree_node_t* node2 = new_tree_node(i2);
+    assert(get_tree_node_data(node1)!= i2);
+    assert(get_tree_node_data(node2) !=i1);
+    tree_swap_nodes_data(node1, node2);
+    assert(get_tree_node_data(node1) == i2);
+    assert(get_tree_node_data(node2) == i1);
+}
 
 int main()
 {
@@ -513,5 +525,6 @@ int main()
     runTest("testGetteurAndSetteurTree", testGetteurAndSetteurTree);
     runTest("Test views tree", testViewsTree);
     runTest("Test insert, get at position and remove tree", testInsertAndgetNodeDataAndRemoveTree);
+    runTest("Test swap tree data",testTreeSwapData);
     return 0;
 }

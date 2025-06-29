@@ -285,3 +285,11 @@ struct tree_node_t* tree_find_node(struct tree_t* T, unsigned int position)
     assert(position < get_tree_size(T));
     return get_tree_node_at_position(get_tree_root(T),position);
 }
+
+void tree_swap_nodes_data(struct tree_node_t* node1, struct tree_node_t* node2)
+{
+    assert(node1 && node2);
+    void * aux = get_tree_node_data(node1);
+    set_tree_node_data(node1,get_tree_node_data(node2));
+    set_tree_node_data(node2,aux);
+}
