@@ -385,14 +385,102 @@ void testViewsTree()
     set_right(get_tree_root(t), node3);
     set_left(node2, node4);
     view_preorder(get_tree_root(t), viewInt);
-    view_inorder(get_tree_root(t),viewInt);
-    view_postorder(get_tree_root(t),viewInt);
+    view_inorder(get_tree_root(t), viewInt);
+    view_postorder(get_tree_root(t), viewInt);
     printf("\n");
-    view_tree(t,viewInt,0);
-    view_tree(t,viewInt,1);
-    view_tree(t,viewInt,2);
-    view_tree(t,viewInt,3);
+    view_tree(t, viewInt, 0);
+    view_tree(t, viewInt, 1);
+    view_tree(t, viewInt, 2);
+    view_tree(t, viewInt, 3);
     delete_tree(t, freeInt);
+}
+
+void testInsertAndRemoveTree()
+{
+    int* i0 = calloc(1, sizeof(int));
+    *i0 = 0;
+    int* i1 = calloc(1, sizeof(int));
+    *i1 = 1;
+    int* i2 = calloc(1, sizeof(int));
+    *i2 = 2;
+    int* i3 = calloc(1, sizeof(int));
+    *i3 = 3;
+    int* i4 = calloc(1, sizeof(int));
+    *i4 = 4;
+    int* i5 = calloc(1, sizeof(int));
+    *i5 = 5;
+    int* i6 = calloc(1, sizeof(int));
+    *i6 = 6;
+    int* i7 = calloc(1, sizeof(int));
+    *i7 = 7;
+    int* i8 = calloc(1, sizeof(int));
+    *i8 = 8;
+    int* i9 = calloc(1, sizeof(int));
+    *i9 = 9;
+
+    struct tree_t* t = new_tree();
+    tree_insert(t, i0);
+
+
+    assert(get_tree_size(t)==1);
+    assert(get_tree_node_data(get_tree_root(t))==i0);
+    view_tree(t, viewInt, 0);
+
+    tree_insert(t, i1);
+    assert(get_tree_size(t) == 2);
+    assert(get_tree_node_data(get_left(get_tree_root(t)))==i1);
+
+    tree_insert(t, i2);
+    assert(get_tree_size(t)==3);
+    assert(get_tree_node_data(get_right(get_tree_root(t)))==i2);
+
+    tree_insert(t, i3);
+    assert(get_tree_size(t)==4);
+    assert(get_tree_node_data(get_left(get_left(get_tree_root(t))))==i3);
+
+    tree_insert(t, i4);
+    assert(get_tree_size(t)==5);
+    assert(get_tree_node_data(get_right(get_left(get_tree_root(t))))==i4);
+
+    tree_insert(t, i5);
+    assert(get_tree_size(t)==6);
+    assert(get_tree_node_data(get_left(get_right(get_tree_root(t))))==i5);
+
+    tree_insert(t, i6);
+    assert(get_tree_size(t)==7);
+    assert(get_tree_node_data(get_right(get_right(get_tree_root(t))))==i6);
+
+    tree_insert(t, i7);
+    assert(get_tree_size(t)==8);
+    assert(get_tree_node_data(get_left(get_left(get_left(get_tree_root(t)))))==i7);
+
+    assert(tree_remove(t)==i7);
+    assert(get_tree_size(t)==7);
+
+    assert(tree_remove(t)==i6);
+    assert(get_tree_size(t)==6);
+
+    assert(tree_remove(t)==i5);
+    assert(get_tree_size(t)==5);
+
+    assert(tree_remove(t)==i4);
+    assert(get_tree_size(t)==4);
+
+    assert(tree_remove(t)==i3);
+    assert(get_tree_size(t)==3);
+
+    assert(tree_remove(t)==i2);
+    assert(get_tree_size(t)==2);
+
+    assert(tree_remove(t)==i1);
+    assert(get_tree_size(t)==1);
+
+    assert(tree_remove(t)==i0);
+    assert(get_tree_size(t)==0);
+
+    // view_tree(t, viewInt, 0);
+    // view_tree(t, viewInt, 1);
+    // view_tree(t, viewInt, 2);
 }
 
 int main()
@@ -412,5 +500,6 @@ int main()
     runTest("testGetteurEtSetteurNodeTree", testGetteurEtSetteurNodeTree);
     runTest("testGetteurAndSetteurTree", testGetteurAndSetteurTree);
     runTest("Test views tree", testViewsTree);
+    runTest("Test insert and remove tree", testInsertAndRemoveTree);
     return 0;
 }

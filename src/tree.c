@@ -179,3 +179,76 @@ void view_tree(const struct tree_t* T, void (*viewData)(const void*), int order)
         printf("Ordre inconnu\n");
     }
 }
+
+struct tree_node_t* insert_into_subtree(struct tree_node_t* node, unsigned int position, void* data)
+{
+    if (position == 0)
+    {
+        return new_tree_node(data);
+    }
+    else
+    {
+        int hauteur = (unsigned int)log2(position + 1);
+        int nbNoeudDernierNiveau = (unsigned int)pow(2, hauteur);
+        int millieu = nbNoeudDernierNiveau / 2;
+        int index = position - (nbNoeudDernierNiveau - 1);
+
+
+        if (index < millieu)
+        {
+            set_left(node,
+                     insert_into_subtree(get_left(node), (unsigned int)position - pow(2, hauteur - 1), data));
+        }
+        else
+        {
+            set_right(node,
+                      insert_into_subtree(get_right(node), (unsigned int)position - pow(2, hauteur), data));
+        }
+        return node;
+    }
+}
+
+void tree_insert(struct tree_t* T, void* data)
+{
+    assert(T);
+    set_tree_root(T, insert_into_subtree(get_tree_root(T), get_tree_size(T), data));
+    increase_tree_size(T);
+}
+
+struct tree_node_t* remove_from_subtree(struct tree_node_t* node, unsigned int position, void** data)
+{
+    if (position == 0)
+    {
+        *data = get_tree_node_data(node);
+        free(node);
+        return NULL;
+    }
+    else
+    {
+        int hauteur = (int)log2(position + 1);
+        int nbNoeudDernierNiveau = (int)pow(2, hauteur);
+        int millieu = nbNoeudDernierNiveau / 2;
+        int index = position - (nbNoeudDernierNiveau - 1);
+
+        if (index < millieu)
+        {
+            set_left(node, remove_from_subtree(get_left(node), (unsigned int)position - pow(2, hauteur - 1), data));
+        }
+        else
+        {
+            set_right(node, remove_from_subtree(get_right(node), (unsigned int)position - pow(2, hauteur), data));
+        }
+        return node;
+    }
+}
+
+void* tree_remove(struct tree_t* T)
+{
+    assert(T);
+    assert(get_tree_root(T));
+    void * data = NULL;
+    set_tree_root(T,remove_from_subtree(get_tree_root(T),get_tree_size(T)-1,&data));
+    decrease_tree_size(T);
+    return data;
+
+}
