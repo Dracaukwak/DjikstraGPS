@@ -1,5 +1,6 @@
 #pragma once
-
+#include "list.h"
+#include "heap.h"
 /**
  * @brief Fonction générique qui calcule et retourne le max entre
  * deux éléments de type numérique quelconque
@@ -78,3 +79,5 @@ int intGreaterThan(const void * a, const void * b);
  * @return int 1 si a==b, sinon 0
  */
 int intEqualTo(const void * a, const void * b);
+
+void viewHeapNodeIntInListNode( struct list_node_t * node);

@@ -34,3 +34,21 @@ int intGreaterThan(const void *a, const void *b) {
 int intEqualTo(const void *a, const void *b) {
     return *((int *) a) == *((int *) b) ? 1 : 0;
 }
+
+void viewHeapNodeIntInListNode( struct list_node_t * node)
+{
+    if (node==NULL)
+    {
+        printf("\nNULL\n ");
+    }
+    else
+    {
+        struct heap_node* heapNode = get_list_node_data(node);
+        printf("********************************* == HEAP NODE == ***********************************\n");
+        printf("Data : %d",*(int*)get_heap_node_data(heapNode));
+        printf("\n");
+        printf("Dict Pos = %d\nKey = %d\n", get_heap_node_dict_position(heapNode), get_heap_node_key(heapNode));
+        printf("********************************** == == ************************************************\n");
+    }
+
+}

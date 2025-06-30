@@ -545,28 +545,96 @@ void testHeapBourrin()
     *i1 = 3;
     unsigned long key1 = 1;
     unsigned int dictPos1 = 0;
-    struct heap_node_t * heapNode1 = new_heap_node(key1,i1);
+    struct heap_node_t* heapNode1 = new_heap_node(key1, i1);
 
     int* i2 = calloc(1, sizeof(int));
     *i2 = 7;
     unsigned long key2 = 2;
     unsigned int dictPos2 = 1;
-    struct heap_node_t * heapNode2 = new_heap_node(key2,i2);
+    struct heap_node_t* heapNode2 = new_heap_node(key2, i2);
 
     int* i3 = calloc(1, sizeof(int));
     *i3 = 9;
     unsigned long key3 = 3;
     unsigned int dictPos3 = 0;
-    struct heap_node_t * heapNode3 = new_heap_node(key3,i3);
+    struct heap_node_t* heapNode3 = new_heap_node(key3, i3);
 
     int heapListType = 2;
-    struct heap_t * H = new_heap(heapListType);
-    struct list_t *heapList = get_heap(H);
-    list_insert_first(heapList,heapNode1);
-    view_list_heap(H,viewInt);
-    list_insert_first(heapList,heapNode2);
-    view_list_heap(H,viewInt);
+    struct heap_t* H = new_heap(heapListType);
+    struct list_t* heapList = get_heap(H);
+    // list_insert_first(heapList, heapNode1);
+    // view_list_heap(H, viewInt);
+    // list_insert_first(heapList, heapNode2);
+    // view_list_heap(H, viewInt);
+}
 
+void testListHeapInsert()
+{
+    int* data1 = calloc(1, sizeof(int));
+    *data1 = 4;
+    unsigned long key1 = 5;
+
+    int* data2 = calloc(1, sizeof(int));
+    *data2 = 9;
+    unsigned long key2 = 10;
+
+    int* data3 = calloc(1, sizeof(int));
+    *data3 = 9;
+    unsigned long key3 = 0;
+
+    int* data4 = calloc(1, sizeof(int));
+    *data4 = 5;
+    unsigned long key4 = 2;
+
+    struct heap_t* H = new_heap(2);
+    struct list_t* heapList = get_heap(H);
+    struct dyn_table_t* dict = get_heap_dictionary(H);
+
+    assert(list_heap_insert(H,key1,data1) == 0);
+    assert(get_heap_node_data(get_list_node_data(get_list_head(heapList))) == data1);
+    assert(get_heap_node_data(get_list_node_data(get_list_tail(heapList)))==data1);
+    assert(get_heap_node_dict_position(get_list_node_data(get_list_head(heapList)))==0);
+    assert(get_heap_node_key(get_list_node_data(get_list_head(heapList))) == key1);
+    assert(get_dyn_table_used(dict)==1);
+    assert(get_dyn_table_size(dict)==1);
+    assert(get_dyn_table_data(dict,0) == get_list_head(heapList));
+    // view_list_heap(H, viewInt);
+
+    assert(list_heap_insert(H,key2,data2)==1);
+    assert(get_heap_node_data(get_list_node_data(get_list_tail(heapList)))==data2);
+    assert(get_heap_node_data(get_list_node_data(get_list_tail(heapList)))!=data1);
+    assert(get_heap_node_dict_position(get_list_node_data(get_list_tail(heapList)))==1);
+    assert(get_heap_node_key(get_list_node_data(get_list_tail(heapList)))==key2);
+    assert(get_dyn_table_used(dict)==2);
+    assert(get_dyn_table_size(dict)==2);
+    assert(get_dyn_table_data(dict,1)==get_list_tail(heapList));
+    // view_list_heap(H, viewInt);
+
+    assert(list_heap_insert(H,key3,data3)==2);
+    assert(get_heap_node_data(get_list_node_data(get_list_head(heapList)))==data3);
+    assert(get_heap_node_key(get_list_node_data(get_list_head(heapList)))==key3);
+    assert(get_heap_node_dict_position(get_list_node_data(get_list_head(heapList)))==2);
+    assert(get_dyn_table_used(dict)==3);
+    assert(get_dyn_table_size(dict)==4);
+    assert(get_dyn_table_data(dict,2)==get_list_head(heapList));
+    // view_list_heap(H,viewInt);
+
+    assert(list_heap_insert(H,key4,data4)==3);
+    assert(get_heap_node_data(get_list_node_data(get_successor(get_list_head(heapList)))) == data4);
+    assert(get_heap_node_key(get_list_node_data(get_successor(get_list_head(heapList)))) == key4);
+    assert(get_heap_node_dict_position(get_list_node_data(get_successor(get_list_head(heapList))))==3);
+    assert(get_dyn_table_used(dict) == 4);
+    assert(get_dyn_table_size(dict) == 4);
+    assert(get_dyn_table_data(dict,3) == get_successor(get_list_head(heapList)));
+
+    view_list_heap(H, viewInt);
+    // view_dyn_table(dict,viewHeapNodeIntInListNode);
+
+    assert(get_heap_node_data(list_heap_extract_min(H))==data3);
+    assert(get_list_size(heapList)==3);
+    assert(get_dyn_table_data(dict,2)==NULL);
+
+    view_dyn_table(dict,viewHeapNodeIntInListNode);
 }
 
 int main()
@@ -589,6 +657,7 @@ int main()
     runTest("Test insert, get at position and remove tree", testInsertAndgetNodeDataAndRemoveTree);
     runTest("Test swap tree data", testTreeSwapData);
     runTest("Test setteur et getteur heapNode", testGetteurAndSetteurHeapNode);
-    runTest("Test heap bourrin",testHeapBourrin);
+    runTest("Test heap bourrin", testHeapBourrin);
+    runTest("Test list heap insert", testListHeapInsert);
     return 0;
 }

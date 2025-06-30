@@ -1,5 +1,4 @@
 #pragma once
-
 /**
  * Tas-min générique
  *

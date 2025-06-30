@@ -62,7 +62,6 @@ void set_heap_node_dict_position(struct heap_node_t* node, unsigned int newPosit
     node->dict_position = newPosition;
 }
 
-
 // type =
 //    0 (Dynamic Table Heap)
 //    1 (Complete Binary Tree Heap)
@@ -99,7 +98,7 @@ struct heap_t* new_heap(int type)
     case 2:
         H->heap = new_list();
         H->heap_insert = list_heap_insert;
-        // H->heap_extract_min = list_heap_extract_min;
+        H->heap_extract_min = list_heap_extract_min;
         // H->heap_increase_priority = list_heap_increase_priority;
         // H->heap_is_empty = list_heap_is_empty;
         H->view_heap = view_list_heap;
@@ -125,53 +124,79 @@ struct dyn_table_t* get_heap_dictionary(const struct heap_t* H)
 }
 
 
-
 /**********************************************************************************
  * ORDERED LIST HEAP
  **********************************************************************************/
 
 // N'oubliez pas à mettre à jour le dictionnaire, si besoin !
 
-unsigned int list_heap_insert(struct heap_t * H, unsigned long key, void * data)
+unsigned int list_heap_insert(struct heap_t* H, unsigned long key, void* data)
 {
     assert(H);
-    struct list_t * heapList = get_heap(H);
-    struct heap_node_t * newHeapNode = new_heap_node(key,data);
-    struct list_node_t * listNode = new_list_node(newHeapNode);
+    assert(get_heap(H));
+    assert(get_heap_dictionary(H));
+    struct list_t* heapList = get_heap(H);
+    struct heap_node_t* newHeapNode = new_heap_node(key, data);
+
+    // listNode contiendra l'element de liste à placer dans le dictionnaire !
+    struct list_node_t* listNode;
+
     if (list_is_empty(heapList) || key < get_heap_node_key(get_list_node_data(get_list_head(heapList))))
     {
-        list_insert_first(heapList,newHeapNode);
+        list_insert_first(heapList, newHeapNode);
+        listNode = get_list_head(heapList);
     }
     else if (key >= get_heap_node_key(get_list_node_data(get_list_tail(heapList))))
     {
-        list_insert_last(heapList,newHeapNode);
+        list_insert_last(heapList, newHeapNode);
+        listNode = get_list_tail(heapList);
     }
     else
     {
-        struct list_node_t * it = get_list_head(heapList);
-        while (it != NULL && key > get_heap_node_key(get_list_node_data(it)) )
+        struct list_node_t* it = get_list_head(heapList);
+        while (it != NULL && key > get_heap_node_key(get_list_node_data(it)))
         {
             it = get_successor(it);
-
         }
-        list_insert_after(heapList,newHeapNode,get_predecessor(it));
+        list_insert_after(heapList, newHeapNode, get_predecessor(it));
+        listNode = get_predecessor(it);
     }
+    unsigned int dictPos = get_dyn_table_used(get_heap_dictionary(H));
+    set_heap_node_dict_position(newHeapNode, dictPos);
+    dyn_table_insert(get_heap_dictionary(H), listNode);
+    // On met l'élément qui contient le heap node dans le dictionnaire
+    return dictPos;
 }
 
-void view_list_heap(const struct heap_t * H, void (*viewHeapNode)(const void *))
+struct heap_node_t* list_heap_extract_min(struct heap_t* H)
 {
     assert(H);
-    struct list_t * heapList = get_heap(H);
-    printf("Nombre de noeud dans la heap list %u\n",get_list_size(heapList));
-    for (const struct list_node_t * it = get_list_head(heapList);it != NULL; it = get_successor(it))
+    assert(get_heap(H));
+    assert(get_heap_dictionary(H));
+    assert(!list_is_empty(get_heap(H)));
+
+    struct list_t* heapList = get_heap(H);
+    struct dyn_table_t* dict = get_heap_dictionary(H);
+    struct heap_node_t* heapNode = list_remove_first(heapList);
+    set_dyn_table_data(dict, get_heap_node_dict_position(heapNode),NULL);
+
+    return heapNode;
+}
+
+void view_list_heap(const struct heap_t* H, void (*viewHeapNode)(const void*))
+{
+    assert(H);
+    struct list_t* heapList = get_heap(H);
+    printf("Nombre de noeud dans la heap list %u\n", get_list_size(heapList));
+    for (const struct list_node_t* it = get_list_head(heapList); it != NULL; it = get_successor(it))
     {
-        const struct heap_node_t * node = get_list_node_data(it);
+        const struct heap_node_t* node = get_list_node_data(it);
         printf("********************************* == HEAP NODE == ***********************************\n");
         printf("Data : ");
         viewHeapNode(get_heap_node_data(node));
 
         printf("\n");
-        printf("Dict Pos = %d\nKey = %d\n",get_heap_node_dict_position(node),get_heap_node_key(node));
+        printf("Dict Pos = %d\nKey = %d\n", get_heap_node_dict_position(node), get_heap_node_key(node));
         printf("********************************** == == ************************************************\n");
     }
     printf("\n");
