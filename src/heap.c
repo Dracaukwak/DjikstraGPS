@@ -99,10 +99,10 @@ struct heap_t* new_heap(int type)
         H->heap = new_list();
         H->heap_insert = list_heap_insert;
         H->heap_extract_min = list_heap_extract_min;
-        // H->heap_increase_priority = list_heap_increase_priority;
-        // H->heap_is_empty = list_heap_is_empty;
+        H->heap_increase_priority = list_heap_increase_priority;
+        H->heap_is_empty = list_heap_is_empty;
         H->view_heap = view_list_heap;
-        // H->delete_heap = delete_list_heap;
+        H->delete_heap = delete_list_heap;
         break;
     default:
         ShowMessage("heap:new_heap : Unknown heap type", 1);
@@ -122,6 +122,17 @@ struct dyn_table_t* get_heap_dictionary(const struct heap_t* H)
     assert(H);
     return H->dict;
 }
+
+/**********************************************************************************
+ * DYNAMIC TABLE HEAP
+ **********************************************************************************/
+
+
+ void dyn_table_heap_update_upwards(struct heap_t *H, unsigned int position)
+{
+
+}
+
 
 
 /**********************************************************************************
@@ -183,6 +194,34 @@ struct heap_node_t* list_heap_extract_min(struct heap_t* H)
     return heapNode;
 }
 
+void list_heap_increase_priority(struct heap_t * H, unsigned int dict_position, unsigned long newKey)
+{
+    assert(H);
+    assert(get_heap(H));
+    assert(get_heap_dictionary(H));
+    struct dyn_table_t * dict = get_heap_dictionary(H);
+    struct list_node_t * listNode = get_dyn_table_data(dict,dict_position);
+    struct heap_node_t * heapNode = get_list_node_data(listNode);
+    set_heap_node_key(heapNode,newKey);
+
+    while (get_predecessor(listNode) != NULL && newKey < get_heap_node_key(get_list_node_data(get_predecessor(listNode))))
+    {
+        unsigned int precDicPos = get_heap_node_dict_position(get_list_node_data(get_predecessor(listNode)));
+        dyn_table_swap_nodes_data(dict,precDicPos,dict_position);
+        list_swap_nodes_data(listNode,get_predecessor(listNode));
+        listNode = get_predecessor(listNode);
+    }
+
+
+}
+
+int list_heap_is_empty(const void * H)
+{
+    assert(H);
+    assert(get_heap(H));
+    return list_is_empty(get_heap(H));
+}
+
 void view_list_heap(const struct heap_t* H, void (*viewHeapNode)(const void*))
 {
     assert(H);
@@ -200,4 +239,15 @@ void view_list_heap(const struct heap_t* H, void (*viewHeapNode)(const void*))
         printf("********************************** == == ************************************************\n");
     }
     printf("\n");
+}
+
+void delete_list_heap(struct heap_t * H, void (*freeHeapNode)(void *))
+{
+    assert(H);
+    assert(get_heap(H));
+    assert(get_heap_dictionary(H));
+    delete_list(get_heap(H),freeHeapNode);
+    delete_dyn_table(get_heap_dictionary(H),NULL);
+    free(H);
+
 }
