@@ -52,3 +52,20 @@ void viewHeapNodeIntInListNode( struct list_node_t * node)
     }
 
 }
+
+void viewHeapNode(struct heap_node_t * node)
+{
+    if (node == NULL)
+    {
+        printf("NULL\n");
+    }
+    else
+    {
+        printf("********************************* == HEAP NODE == ***********************************\n");
+        printf("Data : ");
+        viewInt(get_heap_node_data(node));
+        printf("\n");
+        printf("Dict Pos = %d\nKey = %d\n",get_heap_node_dict_position(node),get_heap_node_key(node));
+        printf("********************************** == == ************************************************\n");
+    }
+}

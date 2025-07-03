@@ -158,6 +158,19 @@ struct dyn_table_t * get_heap_dictionary(const struct heap_t * H);
 void dyn_table_heap_update_upwards(struct heap_t *H, unsigned int position);
 
 /**
+ * Corrige la position de l'élément à la position \p position en le comparant avec ses fils
+ * (2*position+1, 2*position+2) et en l'échangeant avec le fils de la plus grande priorité si nécessaire.
+ * Le dictionnaire est mis à jour en même temps.
+ *
+ * Procédure récursive.
+ *
+ * @param[in] H
+ * @param[in] position
+ */
+void dyn_table_heap_update_downwards(struct heap_t *H, unsigned int position);
+
+
+/**
  * Insérer dans le tas \p H un élément de donnée \p data et priorité \p key.
  *
  * @param[in] H

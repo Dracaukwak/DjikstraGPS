@@ -81,3 +81,5 @@ int intGreaterThan(const void * a, const void * b);
 int intEqualTo(const void * a, const void * b);
 
 void viewHeapNodeIntInListNode( struct list_node_t * node);
+
+void viewHeapNode(struct heap_node_t * node);
