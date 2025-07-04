@@ -82,9 +82,9 @@ struct heap_t* new_heap(int type)
         H->heap_insert = dyn_table_heap_insert;
         H->heap_extract_min = dyn_table_heap_extract_min;
         H->heap_increase_priority = dyn_table_heap_increase_priority;
-        H->heap_is_empty = dyn_table_heap_is_empty;
-        H->view_heap = view_dyn_table_heap;
-        H->delete_heap = delete_dyn_table_heap;
+        // H->heap_is_empty = dyn_table_heap_is_empty;
+        // H->view_heap = view_dyn_table_heap;
+        // H->delete_heap = delete_dyn_table_heap;
         break;
     case 1:
         //     H->heap = new_tree();
@@ -163,9 +163,11 @@ unsigned int dyn_table_heap_insert(struct heap_t* H, unsigned long key, void* da
     struct heap_node_t* newHeapNode = new_heap_node(key, data);
     struct dyn_table_t* dynTableHeap = get_heap(H);
     struct dyn_table_t* dict = get_heap_dictionary(H);
+
     unsigned int position = get_dyn_table_used(dynTableHeap);
     int* posDict = malloc(sizeof(int));
-    *posDict = (int)get_dyn_table_used(dict);
+    *posDict = (int)get_dyn_table_used(dynTableHeap);
+
     set_heap_node_dict_position(newHeapNode, get_dyn_table_used(dict));
     dyn_table_insert(dynTableHeap, newHeapNode);
     dyn_table_insert(dict, posDict);
@@ -228,12 +230,15 @@ struct heap_node_t* dyn_table_heap_extract_min(struct heap_t* H)
 
     dyn_table_swap_nodes_data(dynTableHeap, 0, get_dyn_table_used(dynTableHeap) - 1);
     struct heap_node_t* heapNodeMin = dyn_table_remove(dynTableHeap);
-    struct heap_node_t* lastNode = get_dyn_table_data(dynTableHeap, 0);
-
     unsigned int posDicoMin = get_heap_node_dict_position(heapNodeMin);
-    unsigned int posDicoLast = get_heap_node_dict_position(lastNode);
 
-    dyn_table_swap_nodes_data(dict, posDicoLast, posDicoMin);
+    if (!dyn_table_is_empty(dynTableHeap))
+    {
+        struct heap_node_t* lastNode = get_dyn_table_data(dynTableHeap, 0);
+        unsigned int posDicoLast = get_heap_node_dict_position(lastNode);
+        dyn_table_swap_nodes_data(dict, posDicoLast, posDicoMin);
+    }
+
     set_dyn_table_data(dict, posDicoMin,NULL);
     dyn_table_heap_update_downwards(H, 0);
 
@@ -249,10 +254,11 @@ void dyn_table_heap_increase_priority(struct heap_t* H, unsigned int dict_positi
     struct dyn_table_t* dyntableHeap = get_heap(H);
 
     unsigned int posDansTas = *(int*)get_dyn_table_data(dict, dict_position);
-    struct heap_node_t * updatedNode = get_dyn_table_data(dyntableHeap,posDansTas);
+    struct heap_node_t* updatedNode = get_dyn_table_data(dyntableHeap, posDansTas);
 
-    set_heap_node_key(updatedNode,newKey);
-    dyn_table_heap_update_upwards(H,posDansTas);
+    set_heap_node_key(updatedNode, newKey);
+    dyn_table_heap_update_upwards(H, posDansTas);
+    
 }
 
 /**********************************************************************************
