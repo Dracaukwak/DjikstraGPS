@@ -797,11 +797,13 @@ void testExtracMinDyntableHeap()
     struct dyn_table_t* dict = get_heap_dictionary(h);
 
     assert(dyn_table_heap_insert(h,key1,data1) == 0);
+    assert(!dyn_table_heap_is_empty(h));
     // view_dyn_table(dynTableHeap, viewHeapNode);
     // view_dyn_table(dict, viewInt);
 
     assert(get_heap_node_data(dyn_table_heap_extract_min(h)) == data1);
     assert(get_dyn_table_data(dict,0) == NULL);
+    assert(dyn_table_heap_is_empty(h));
     // view_dyn_table(dynTableHeap, viewHeapNode);
     // view_dyn_table(dict, viewInt);
 
@@ -843,18 +845,89 @@ void testDynTableIncreasePriority()
 
     int* data3 = calloc(1, sizeof(int));
     *data3 = 5;
-    unsigned long key3 = 1;
+    unsigned long key3 = 6;
 
     int* data4 = calloc(1, sizeof(int));
     *data4 = 6;
-    unsigned long key4 = 0;
+    unsigned long key4 = 15;
 
 
     struct heap_t* h = new_heap(0);
     struct dyn_table_t* dynTableHeap = get_heap(h);
     struct dyn_table_t* dict = get_heap_dictionary(h);
 
+    dyn_table_heap_insert(h,key1,data1);
+    dyn_table_heap_increase_priority(h,0,4);
+    // view_dyn_table(dynTableHeap, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
 
+    assert(get_heap_node_key(get_dyn_table_data(dynTableHeap,0))== 4);
+    // view_dyn_table(dynTableHeap, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+
+    dyn_table_heap_insert(h,key2,data2);
+    // view_dyn_table(dynTableHeap, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+    dyn_table_heap_increase_priority(h,1,3);
+    assert(get_heap_node_key(get_dyn_table_data(dynTableHeap,0))==3);
+    // view_dyn_table(dynTableHeap, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+
+    dyn_table_heap_insert(h,key3,data3);
+    // view_dyn_table(dynTableHeap, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+    dyn_table_heap_increase_priority(h,2,2);
+    assert(get_heap_node_key(get_dyn_table_data(dynTableHeap,0))==2);
+    // view_dyn_table(dynTableHeap, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+
+    dyn_table_heap_insert(h,key4,data4);
+    // view_dyn_table(dynTableHeap, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+    dyn_table_heap_increase_priority(h,2,1);
+    assert(get_heap_node_key(get_dyn_table_data(dynTableHeap,0))==1);
+    // view_dyn_table(dynTableHeap, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+    dyn_table_heap_increase_priority(h,3,2);
+    assert(get_heap_node_key(get_dyn_table_data(dynTableHeap,1))==2);
+    // view_dyn_table(dynTableHeap, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+
+
+}
+
+
+void testViewDyntableHeap()
+{
+    int* data1 = calloc(1, sizeof(int));
+    *data1 = 4;
+    unsigned long key1 = 5;
+
+    int* data2 = calloc(1, sizeof(int));
+    *data2 = 9;
+    unsigned long key2 = 10;
+
+    int* data3 = calloc(1, sizeof(int));
+    *data3 = 5;
+    unsigned long key3 = 6;
+
+    int* data4 = calloc(1, sizeof(int));
+    *data4 = 6;
+    unsigned long key4 = 15;
+
+    int* data5 = calloc(1, sizeof(int));
+    *data4 = 7;
+    unsigned long key5 = 1;
+    struct heap_t* h = new_heap(0);
+    struct dyn_table_t* dynTableHeap = get_heap(h);
+    dyn_table_heap_insert(h,key1,data1);
+    dyn_table_heap_insert(h,key2,data2);
+    dyn_table_heap_insert(h,key3,data3);
+    dyn_table_heap_insert(h,key4,data4);
+    dyn_table_heap_insert(h,key5,data5);
+
+    // view_dyn_table_heap(h,viewHeapNode);
+    // view_dyn_table(get_heap_dictionary(h),viewInt);
 }
 int main()
 {
@@ -881,5 +954,7 @@ int main()
     runTest("Test list heap increase priority", testIncreaseListHeapPriority);
     runTest("Test test Insert dynTableHeap", testInsertdynTableHeap);
     runTest("Test testExtracMinDyntableHeap", testExtracMinDyntableHeap);
+    runTest("Test testDynTableIncreasePriority",testDynTableIncreasePriority);
+    runTest("Test view dyn truc heap",testViewDyntableHeap);
     return 0;
 }

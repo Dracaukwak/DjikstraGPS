@@ -258,9 +258,32 @@ void dyn_table_heap_increase_priority(struct heap_t* H, unsigned int dict_positi
 
     set_heap_node_key(updatedNode, newKey);
     dyn_table_heap_update_upwards(H, posDansTas);
-    
+
+}
+int dyn_table_heap_is_empty(const void * H)
+{
+    assert(H);
+    assert(get_heap(H));
+    return dyn_table_is_empty(get_heap(H));
 }
 
+void view_dyn_table_heap(const struct heap_t * H, void (*viewHeapNode)(const void *))
+{
+    assert(H);
+    assert(get_heap(H));
+
+    view_dyn_table(get_heap(H),viewHeapNode);
+
+}
+
+void delete_dyn_table_heap(struct heap_t * H, void (*freeHeapNode)(void *))
+{
+    assert(H);
+    assert(get_heap(H));
+    delete_dyn_table(get_heap(H),freeHeapNode);
+    delete_dyn_table(get_heap_dictionary(H),freeInt);
+    free(H);
+}
 /**********************************************************************************
  * ORDERED LIST HEAP
  **********************************************************************************/

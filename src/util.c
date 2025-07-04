@@ -14,7 +14,7 @@ void viewInt(const void *i) {
     if (i == NULL) {
         printf("NULL");
     } else {
-        printf("%d ", *((int *) i));
+        printf("%d", *((int *) i));
     }
 }
 
@@ -61,11 +61,11 @@ void viewHeapNode(struct heap_node_t * node)
     }
     else
     {
-        printf("********************************* == HEAP NODE == ***********************************\n");
-        printf("Data : ");
-        viewInt(get_heap_node_data(node));
-        printf("\n");
-        printf("Dict Pos = %d\nKey = %d\n",get_heap_node_dict_position(node),get_heap_node_key(node));
-        printf("********************************** == == ************************************************\n");
+
+        printf("[HeapNode | Data: %d | Key: %lu | DictPos: %u]\n",
+               *(int*)get_heap_node_data(node),
+               get_heap_node_key(node),
+               get_heap_node_dict_position(node)
+        );
     }
 }
