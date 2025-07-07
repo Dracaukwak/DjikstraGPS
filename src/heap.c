@@ -7,7 +7,7 @@
 #include <math.h>
 
 #include "../include/dyntable.h"
-#include "../include/tree.h"
+
 #include "../include/list.h"
 #include "../include/util.h"
 
@@ -82,17 +82,17 @@ struct heap_t* new_heap(int type)
         H->heap_insert = dyn_table_heap_insert;
         H->heap_extract_min = dyn_table_heap_extract_min;
         H->heap_increase_priority = dyn_table_heap_increase_priority;
-        // H->heap_is_empty = dyn_table_heap_is_empty;
-        // H->view_heap = view_dyn_table_heap;
-        // H->delete_heap = delete_dyn_table_heap;
+        H->heap_is_empty = dyn_table_heap_is_empty;
+        H->view_heap = view_dyn_table_heap;
+        H->delete_heap = delete_dyn_table_heap;
         break;
     case 1:
-        //     H->heap = new_tree();
-        //     H->heap_insert = tree_heap_insert;
+        H->heap = new_tree();
+        H->heap_insert = tree_heap_insert;
         //     H->heap_extract_min = tree_heap_extract_min;
         //     H->heap_increase_priority = tree_heap_increase_priority;
         //     H->heap_is_empty = tree_heap_is_empty;
-        //     H->view_heap = view_tree_heap;
+        H->view_heap = view_tree_heap;
         //     H->delete_heap = delete_tree_heap;
         break;
     case 2:
@@ -258,32 +258,96 @@ void dyn_table_heap_increase_priority(struct heap_t* H, unsigned int dict_positi
 
     set_heap_node_key(updatedNode, newKey);
     dyn_table_heap_update_upwards(H, posDansTas);
-
 }
-int dyn_table_heap_is_empty(const void * H)
+
+int dyn_table_heap_is_empty(const void* H)
 {
     assert(H);
     assert(get_heap(H));
     return dyn_table_is_empty(get_heap(H));
 }
 
-void view_dyn_table_heap(const struct heap_t * H, void (*viewHeapNode)(const void *))
+void view_dyn_table_heap(const struct heap_t* H, void (*viewHeapNode)(const void*))
 {
     assert(H);
     assert(get_heap(H));
 
-    view_dyn_table(get_heap(H),viewHeapNode);
-
+    view_dyn_table(get_heap(H), viewHeapNode);
 }
 
-void delete_dyn_table_heap(struct heap_t * H, void (*freeHeapNode)(void *))
+void delete_dyn_table_heap(struct heap_t* H, void (*freeHeapNode)(void*))
 {
     assert(H);
     assert(get_heap(H));
-    delete_dyn_table(get_heap(H),freeHeapNode);
-    delete_dyn_table(get_heap_dictionary(H),freeInt);
+    delete_dyn_table(get_heap(H), freeHeapNode);
+    delete_dyn_table(get_heap_dictionary(H), freeInt);
     free(H);
 }
+
+
+/**********************************************************************************
+ * COMPLETE BINARY TREE HEAP
+ **********************************************************************************/
+
+
+void tree_heap_update_upwards(struct heap_t* H, unsigned int position, struct tree_node_t* node)
+{
+    assert(H);
+    assert(get_heap(H));
+    assert(get_heap_dictionary(H));
+
+    if (position != 0)
+    {
+        struct tree_t* t = get_heap(H);
+        unsigned long keyFils = get_heap_node_key(get_tree_node_data(node));
+        struct tree_node_t* nodePere = tree_find_node(t, (position - 1) / 2);
+        unsigned long keyPere = get_heap_node_key(get_tree_node_data(nodePere));
+
+        if (keyFils < keyPere)
+        {
+            struct dyn_table_t* dict = get_heap_dictionary(H);
+            dyn_table_swap_nodes_data(dict, get_heap_node_dict_position(get_tree_node_data(node)),
+                                      get_heap_node_dict_position(get_tree_node_data(nodePere)));
+            tree_swap_nodes_data(node, nodePere);
+
+            tree_heap_update_upwards(H, (position - 1) / 2, nodePere);
+        }
+    }
+}
+
+unsigned int tree_heap_insert(struct heap_t* H, unsigned long key, void* data)
+{
+    assert(H);
+    assert(get_heap(H));
+    assert(get_heap_dictionary(H));
+    struct heap_node_t* newHeapNode = new_heap_node(key, data);
+    struct tree_t * treeHeap = get_heap(H);
+    struct dyn_table_t * dict = get_heap_dictionary(H);
+    unsigned int * posInDict = malloc(sizeof(unsigned int));
+    *posInDict = get_dyn_table_used(dict);
+    set_heap_node_dict_position(newHeapNode,get_dyn_table_used(dict));
+
+    dyn_table_insert(dict,posInDict);
+    tree_insert(treeHeap,newHeapNode);
+    struct tree_node_t * treeNode = tree_find_node(treeHeap,get_tree_size(treeHeap)-1);
+    tree_heap_update_upwards(H,get_tree_size(treeHeap)-1,treeNode);
+    return get_heap_node_dict_position(newHeapNode);
+}
+
+void tree_heap_update_downwards(struct heap_t* H, struct tree_node_t* node)
+{
+
+
+}
+
+void view_tree_heap(const struct heap_t * H, void (*viewHeapNode)(const void *))
+{
+    assert(H);
+    assert(get_heap(H));
+    struct tree_t * heapTree = get_heap(H);
+    view_tree(heapTree,viewHeapNode,0);
+}
+
 /**********************************************************************************
  * ORDERED LIST HEAP
  **********************************************************************************/

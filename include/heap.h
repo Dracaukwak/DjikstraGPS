@@ -1,4 +1,5 @@
 #pragma once
+#include "tree.h"
 /**
  * Tas-min générique
  *
@@ -228,6 +229,40 @@ void delete_dyn_table_heap(struct heap_t * H, void (*freeHeapNode)(void *));
 /***************************************************
  * COMPLETE BINARY TREE HEAP
  ***************************************************/
+
+/**
+ * Corrige la position du nœud à la position \p position
+ * de l'arbre raciné à \p node en le comparant avec son père
+ * et en l'échangeant avec lui si nécessaire.
+ * Le dictionnaire est mis à jour en même temps.
+ *
+ * Procédure récursive. En descendant, on cherche le premier nœud
+ * à corriger qui se trouve dans la position \p position (de la même façon
+ * que dans insert_into_subtree). En remontant, on corrige en échangeant
+ * avec le père, si besoin.
+ *
+ * Procédure très difficile !
+ *
+ * @param[in] H
+ * @param[in] position
+ * @param[in] node
+ */
+void tree_heap_update_upwards(struct heap_t *H, unsigned int position, struct tree_node_t *node);
+
+/**
+ * Corrige la position du nœud \p node en le comparant avec ses fils
+ * et en l'échangeant avec le fils de la plus grande priorité si nécessaire.
+ * Le dictionnaire est mis à jour en même temps.
+ *
+ * Procédure récursive.
+ *
+ * NB: Le sous-arbre avec racine \p node ne peut pas être vide.
+ *
+ * @param[in] H
+ * @param[in] node
+ */
+void tree_heap_update_downwards(struct heap_t *H, struct tree_node_t *node);
+
 
 /**
  * Insérer dans le tas \p H un élément de donnée \p data et priorité \p key.
