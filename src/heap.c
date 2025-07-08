@@ -89,11 +89,11 @@ struct heap_t* new_heap(int type)
     case 1:
         H->heap = new_tree();
         H->heap_insert = tree_heap_insert;
-        //     H->heap_extract_min = tree_heap_extract_min;
-        //     H->heap_increase_priority = tree_heap_increase_priority;
-        //     H->heap_is_empty = tree_heap_is_empty;
+        H->heap_extract_min = tree_heap_extract_min;
+        H->heap_increase_priority = tree_heap_increase_priority;
+        H->heap_is_empty = tree_heap_is_empty;
         H->view_heap = view_tree_heap;
-        //     H->delete_heap = delete_tree_heap;
+        H->delete_heap = delete_tree_heap;
         break;
     case 2:
         H->heap = new_list();

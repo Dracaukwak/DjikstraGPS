@@ -6,7 +6,7 @@
  * L'implémentation du graphe est basée sur une liste par sommet contenant
  * les arêtes incidentes à lui.
  */
-
+struct edge_t;
 
 /**
  * Un sommet (\p vertex_t) d'un graphe est une structure qui contient naturellement :
@@ -29,6 +29,15 @@ struct vertex_t {
 	struct vertex_t * predecessor;
 	unsigned int dict_position;
 };
+
+/**
+ * Construit et initialise un nouveau sommet d'un graphe avec une liste d'incidence vide.
+ *
+ * @param[in] id l'identifiant à affecter au nouveau sommet
+ * @return le nouveau sommet créé
+ */
+struct vertex_t * new_vertex(char * id);
+
 
 /**
  * Restitue l'identifiant du sommet \p V.
@@ -131,6 +140,16 @@ struct edge_t {
 	struct vertex_t * U, * V;
 	unsigned int distance;
 };
+
+/**
+ * Construit et initialise une nouvelle arête d'un graphe.
+ *
+ * @param U
+ * @param V
+ * @param distance
+ * @return la nouvelle arête créée
+ */
+struct edge_t * new_edge(struct vertex_t * U, struct vertex_t * V, unsigned int distance);
 
 /**
  * Restitue l'extrémité U de l'arête \p E=(U,V).

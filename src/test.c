@@ -6,6 +6,7 @@
 #include "../include/dyntable.h"
 #include "../include/tree.h"
 #include "../include/heap.h"
+#include "../include/graph.h"
 
 void afficheEtoile()
 {
@@ -1020,14 +1021,14 @@ void test_tree_heap_increase_priority()
     struct dyn_table_t* dict = get_heap_dictionary(h);
     tree_heap_insert(h, key1, data1);
     tree_heap_insert(h, key2, data2);
-    tree_heap_increase_priority(h,1,4);
+    tree_heap_increase_priority(h, 1, 4);
     assert(*(int*)get_dyn_table_data(dict,0)==1);
     assert(*(int*)get_dyn_table_data(dict,1)==0);
     // view_tree_heap(h, viewHeapNode);
     // view_dyn_table(dict, viewInt);
 
-    tree_heap_insert(h,key3,data3);
-    tree_heap_increase_priority(h,2,3);
+    tree_heap_insert(h, key3, data3);
+    tree_heap_increase_priority(h, 2, 3);
     assert(*(int*)get_dyn_table_data(dict,0)==1);
     assert(*(int*)get_dyn_table_data(dict,1)==2);
     assert(*(int*)get_dyn_table_data(dict,2)==0);
@@ -1035,6 +1036,7 @@ void test_tree_heap_increase_priority()
     // view_tree_heap(h, viewHeapNode);
     // view_dyn_table(dict, viewInt);
 }
+
 void test_tree_heap_extract_min()
 {
     int* data1 = calloc(1, sizeof(int));
@@ -1053,14 +1055,14 @@ void test_tree_heap_extract_min()
     *data4 = 6;
     unsigned long key4 = 15;
 
-    struct heap_t * h = new_heap(2);
-    struct tree_t * t = get_heap(h);
-    struct dyn_table_t * dict = get_heap_dictionary(h);
+    struct heap_t* h = new_heap(2);
+    struct tree_t* t = get_heap(h);
+    struct dyn_table_t* dict = get_heap_dictionary(h);
 
-    tree_heap_insert(h,key1,data1);
-    tree_heap_insert(h,key2,data2);
-    tree_heap_insert(h,key3,data3);
-    tree_heap_insert(h,key4,data4);
+    tree_heap_insert(h, key1, data1);
+    tree_heap_insert(h, key2, data2);
+    tree_heap_insert(h, key3, data3);
+    tree_heap_insert(h, key4, data4);
     // view_tree_heap(h,viewHeapNode);
     // view_dyn_table(dict,viewInt);
     assert(get_heap_node_data(tree_heap_extract_min(h))==data1);
@@ -1075,10 +1077,54 @@ void test_tree_heap_extract_min()
     assert(get_heap_node_data(tree_heap_extract_min(h))==data3);
     // view_tree_heap(h,viewHeapNode);
     // view_dyn_table(dict,viewInt);
-
 }
-int main()
+
+void test_vertex()
 {
+    char ville[10] = "Metz";
+    char ville1[10] = "Paris";
+    char ville2[10] = "Nancy";
+    struct vertex_t* v1 = new_vertex(ville1);
+    struct vertex_t* v2 = new_vertex(ville2);
+
+    struct edge_t *e = new_edge(v1,v2,15);
+    struct vertex_t* v = new_vertex(ville);
+    set_vertex_dict_position(v, 0);
+    set_vertex_total_distance(v, 10);
+    vertex_add_incident_edge(v,e);
+    assert(!list_is_empty(get_vertex_incidence_list(v)));
+    assert(get_vertex_predecessor(v)==NULL);
+    assert(get_vertex_total_distance(v)==10);
+    assert(get_vertex_dict_position(v)==0);
+    assert(get_vertex_id(v)==ville);
+
+    // view_vertex(v);
+}
+
+void test_edge()
+{
+    char ville1[10] = "Metz";
+    char ville2[10] = "Nancy";
+    struct vertex_t* v1 = new_vertex(ville1);
+    struct vertex_t* v2 = new_vertex(ville2);
+
+    struct edge_t *e = new_edge(v1,v2,15);
+    assert(get_edge_endpoint_U(e) == v1);
+    assert(get_edge_endpoint_V(e) == v2);
+    assert(get_edge_distance(e)==15);
+    // view_edge(e);
+}
+
+void test_graph(char * filename)
+{
+    graph G = read_graph(filename);
+    view_graph(G);
+    view_list(get_graph_edges(G),view_edge);
+}
+
+int main(int argc,char** argv)
+{
+
     runTest("utils.c", testUtils);
     runTest("listNode", testListNode);
     runTest("liste getteurAndsetteur", testGetteurAndSetteurList);
@@ -1106,6 +1152,11 @@ int main()
     runTest("Test view dyn truc heap", testViewDyntableHeap);
     runTest("Test testTreeHeapInsert", testTreeHeapInsert);
     runTest("Test tree_heap_increase_priority", test_tree_heap_increase_priority);
-    runTest("test_tree_heap_extract_min",test_tree_heap_extract_min);
+    runTest("test_tree_heap_extract_min", test_tree_heap_extract_min);
+    runTest("test_vertex", test_vertex);
+    runTest("test_edge",test_edge);
+    // runTest("Test_graph",test_graph);
+    // test_graph(argv[1]);
+
     return 0;
 }
