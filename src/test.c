@@ -993,6 +993,7 @@ void testTreeHeapInsert()
     // view_dyn_table(dict, viewInt);
 }
 
+
 void test_tree_heap_increase_priority()
 {
     int* data1 = calloc(1, sizeof(int));
@@ -1031,12 +1032,51 @@ void test_tree_heap_increase_priority()
     assert(*(int*)get_dyn_table_data(dict,1)==2);
     assert(*(int*)get_dyn_table_data(dict,2)==0);
     assert(get_heap_node_data(get_tree_node_data(get_tree_root(t)))==data3);
-    view_tree_heap(h, viewHeapNode);
-    view_dyn_table(dict, viewInt);
+    // view_tree_heap(h, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
 }
+void test_tree_heap_extract_min()
+{
+    int* data1 = calloc(1, sizeof(int));
+    *data1 = 4;
+    unsigned long key1 = 3;
 
+    int* data2 = calloc(1, sizeof(int));
+    *data2 = 9;
+    unsigned long key2 = 7;
 
+    int* data3 = calloc(1, sizeof(int));
+    *data3 = 5;
+    unsigned long key3 = 10;
 
+    int* data4 = calloc(1, sizeof(int));
+    *data4 = 6;
+    unsigned long key4 = 15;
+
+    struct heap_t * h = new_heap(2);
+    struct tree_t * t = get_heap(h);
+    struct dyn_table_t * dict = get_heap_dictionary(h);
+
+    tree_heap_insert(h,key1,data1);
+    tree_heap_insert(h,key2,data2);
+    tree_heap_insert(h,key3,data3);
+    tree_heap_insert(h,key4,data4);
+    // view_tree_heap(h,viewHeapNode);
+    // view_dyn_table(dict,viewInt);
+    assert(get_heap_node_data(tree_heap_extract_min(h))==data1);
+    assert(get_tree_size(t)==3);
+    // view_tree_heap(h,viewHeapNode);
+    // view_dyn_table(dict,viewInt);
+    assert(get_heap_node_data(tree_heap_extract_min(h))==data2);
+    assert(get_tree_size(t)==2);
+    assert(get_heap_node_key(get_tree_node_data(get_tree_root(t)))==10);
+    // view_tree_heap(h,viewHeapNode);
+    // view_dyn_table(dict,viewInt);
+    assert(get_heap_node_data(tree_heap_extract_min(h))==data3);
+    // view_tree_heap(h,viewHeapNode);
+    // view_dyn_table(dict,viewInt);
+
+}
 int main()
 {
     runTest("utils.c", testUtils);
@@ -1066,5 +1106,6 @@ int main()
     runTest("Test view dyn truc heap", testViewDyntableHeap);
     runTest("Test testTreeHeapInsert", testTreeHeapInsert);
     runTest("Test tree_heap_increase_priority", test_tree_heap_increase_priority);
+    runTest("test_tree_heap_extract_min",test_tree_heap_extract_min);
     return 0;
 }

@@ -12,4 +12,6 @@ add_executable(test src/test.c
         src/dyntable.c
         src/tree.c
         src/heap.c
+        src/graph.c
+        include/graph.h
 )
