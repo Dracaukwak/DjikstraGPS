@@ -940,15 +940,15 @@ void testTreeHeapInsert()
 
     int* data3 = calloc(1, sizeof(int));
     *data3 = 5;
-    unsigned long key3 = 6;
+    unsigned long key3 = 7;
 
     int* data4 = calloc(1, sizeof(int));
     *data4 = 6;
-    unsigned long key4 = 15;
+    unsigned long key4 = 0;
 
     int* data5 = calloc(1, sizeof(int));
     *data5 = 7;
-
+    unsigned long key5 = 1;
     struct heap_t* h = new_heap(2);
     struct tree_t* t = get_heap(h);
     struct dyn_table_t* dict = get_heap_dictionary(h);
@@ -962,9 +962,80 @@ void testTreeHeapInsert()
     assert(get_tree_size(t)==2);
     assert(*(int*)get_dyn_table_data(dict,0)==1);
     assert(*(int*)get_dyn_table_data(dict,1)==0);
-    view_tree_heap(h,viewHeapNode);
-    view_dyn_table(dict,viewInt);
+    // view_tree_heap(h,viewHeapNode);
+    // view_dyn_table(dict,viewInt);
+
+    assert(tree_heap_insert(h,key3,data3)==2);
+    assert(get_tree_size(t)==3);
+    assert(*(int*)get_dyn_table_data(dict,0)==1);
+    assert(*(int*)get_dyn_table_data(dict,1)==0);
+    assert(*(int*)get_dyn_table_data(dict,2)==2);
+    // view_tree_heap(h,viewHeapNode);
+    // view_dyn_table(dict,viewInt);
+
+    assert(tree_heap_insert(h,key4,data4)==3);
+    assert(get_tree_size(t)==4);
+    assert(*(int*)get_dyn_table_data(dict,0)==3);
+    assert(*(int*)get_dyn_table_data(dict,1)==1);
+    assert(*(int*)get_dyn_table_data(dict,2)==2);
+    assert(*(int*)get_dyn_table_data(dict,3)==0);
+    // view_tree_heap(h, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+
+    assert(tree_heap_insert(h,key5,data5)==4);
+    assert(get_tree_size(t)==5);
+    assert(*(int*)get_dyn_table_data(dict,0)==3);
+    assert(*(int*)get_dyn_table_data(dict,1)==4);
+    assert(*(int*)get_dyn_table_data(dict,2)==2);
+    assert(*(int*)get_dyn_table_data(dict,3)==0);
+    assert(*(int*)get_dyn_table_data(dict,4)==1);
+    // view_tree_heap(h, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
 }
+
+void test_tree_heap_increase_priority()
+{
+    int* data1 = calloc(1, sizeof(int));
+    *data1 = 4;
+    unsigned long key1 = 5;
+
+    int* data2 = calloc(1, sizeof(int));
+    *data2 = 9;
+    unsigned long key2 = 10;
+
+    int* data3 = calloc(1, sizeof(int));
+    *data3 = 5;
+    unsigned long key3 = 15;
+
+    int* data4 = calloc(1, sizeof(int));
+    *data4 = 6;
+    unsigned long key4 = 0;
+
+    int* data5 = calloc(1, sizeof(int));
+    *data5 = 7;
+    unsigned long key5 = 1;
+    struct heap_t* h = new_heap(2);
+    struct tree_t* t = get_heap(h);
+    struct dyn_table_t* dict = get_heap_dictionary(h);
+    tree_heap_insert(h, key1, data1);
+    tree_heap_insert(h, key2, data2);
+    tree_heap_increase_priority(h,1,4);
+    assert(*(int*)get_dyn_table_data(dict,0)==1);
+    assert(*(int*)get_dyn_table_data(dict,1)==0);
+    // view_tree_heap(h, viewHeapNode);
+    // view_dyn_table(dict, viewInt);
+
+    tree_heap_insert(h,key3,data3);
+    tree_heap_increase_priority(h,2,3);
+    assert(*(int*)get_dyn_table_data(dict,0)==1);
+    assert(*(int*)get_dyn_table_data(dict,1)==2);
+    assert(*(int*)get_dyn_table_data(dict,2)==0);
+    assert(get_heap_node_data(get_tree_node_data(get_tree_root(t)))==data3);
+    view_tree_heap(h, viewHeapNode);
+    view_dyn_table(dict, viewInt);
+}
+
+
 
 int main()
 {
@@ -979,7 +1050,7 @@ int main()
     runTest("Test swap et exist", testSwapAndExist);
     runTest("Test dyntableCreation", testDyntableCreation);
     runTest("Test dyntable getteur et setteur", testDyntableGetteurAndSetteur);
-    // runTest("testInsertEtRemoveDyntable", testInsertEtRemoveDyntable);
+    runTest("testInsertEtRemoveDyntable", testInsertEtRemoveDyntable);
     runTest("testGetteurEtSetteurNodeTree", testGetteurEtSetteurNodeTree);
     runTest("testGetteurAndSetteurTree", testGetteurAndSetteurTree);
     runTest("Test views tree", testViewsTree);
@@ -994,5 +1065,6 @@ int main()
     runTest("Test testDynTableIncreasePriority", testDynTableIncreasePriority);
     runTest("Test view dyn truc heap", testViewDyntableHeap);
     runTest("Test testTreeHeapInsert", testTreeHeapInsert);
+    runTest("Test tree_heap_increase_priority", test_tree_heap_increase_priority);
     return 0;
 }

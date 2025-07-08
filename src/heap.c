@@ -315,37 +315,123 @@ void tree_heap_update_upwards(struct heap_t* H, unsigned int position, struct tr
     }
 }
 
+
+
 unsigned int tree_heap_insert(struct heap_t* H, unsigned long key, void* data)
 {
     assert(H);
     assert(get_heap(H));
     assert(get_heap_dictionary(H));
     struct heap_node_t* newHeapNode = new_heap_node(key, data);
-    struct tree_t * treeHeap = get_heap(H);
-    struct dyn_table_t * dict = get_heap_dictionary(H);
-    unsigned int * posInDict = malloc(sizeof(unsigned int));
-    *posInDict = get_dyn_table_used(dict);
-    set_heap_node_dict_position(newHeapNode,get_dyn_table_used(dict));
+    struct tree_t* treeHeap = get_heap(H);
+    struct dyn_table_t* dict = get_heap_dictionary(H);
+    unsigned int* position = malloc(sizeof(unsigned int));
+    *position = get_dyn_table_used(dict);
+    set_heap_node_dict_position(newHeapNode, get_dyn_table_used(dict));
 
-    dyn_table_insert(dict,posInDict);
-    tree_insert(treeHeap,newHeapNode);
-    struct tree_node_t * treeNode = tree_find_node(treeHeap,get_tree_size(treeHeap)-1);
-    tree_heap_update_upwards(H,get_tree_size(treeHeap)-1,treeNode);
+    dyn_table_insert(dict, position);
+    tree_insert(treeHeap, newHeapNode);
+    struct tree_node_t* treeNode = tree_find_node(treeHeap, get_tree_size(treeHeap) - 1);
+    tree_heap_update_upwards(H, get_tree_size(treeHeap) - 1, treeNode);
     return get_heap_node_dict_position(newHeapNode);
+}
+
+void tree_heap_increase_priority(struct heap_t* H, unsigned int dict_position, unsigned long newKey)
+{
+    assert(H);
+    assert(get_heap(H));
+    assert(get_heap_dictionary(H));
+    struct tree_t* treeHeap = get_heap(H);
+    struct dyn_table_t* dict = get_heap_dictionary(H);
+
+    unsigned int positionDansLarbre = *(unsigned int*)get_dyn_table_data(dict, dict_position);
+    struct tree_node_t* treeNode = tree_find_node(treeHeap, positionDansLarbre);
+    struct heap_node_t* heapNode = get_tree_node_data(treeNode);
+
+    set_heap_node_key(heapNode, newKey);
+    tree_heap_update_upwards(H, positionDansLarbre, treeNode);
 }
 
 void tree_heap_update_downwards(struct heap_t* H, struct tree_node_t* node)
 {
+    assert(H);
+    assert(node);
+    assert(get_heap(H));
+    assert(get_heap_dictionary(H));
 
+    if (get_left(node) || get_right(node))
+    {
+        struct dyn_table_t* dict = get_heap_dictionary(H);
+        struct heap_node_t* heapNodePere = get_tree_node_data(node);
+        unsigned int keyPere = get_heap_node_key(heapNodePere);
+        unsigned int posDictPere = get_heap_node_dict_position(heapNodePere);
+        unsigned int keyMin = keyPere;
+        unsigned int posMin = posDictPere;
+        struct tree_node_t* nodeTreeMin = node;
 
+        if (get_right(node))
+        {
+            struct heap_node_t* heapNodeFd = get_tree_node_data(get_right(node));
+            unsigned int keyFd = get_heap_node_key(heapNodeFd);
+            if (keyFd < keyPere)
+            {
+                keyMin = keyFd;
+                posMin = get_heap_node_dict_position(heapNodeFd);
+                nodeTreeMin = get_right(node);
+            }
+        }
+
+        struct heap_node_t* heapNodeFg = get_tree_node_data(get_left(node));
+        unsigned int keyFg = get_heap_node_key(heapNodeFg);
+
+        if (keyFg < keyMin)
+        {
+            posMin = get_heap_node_dict_position(heapNodeFg);
+            nodeTreeMin = get_left(node);
+        }
+        if (node != nodeTreeMin)
+        {
+            dyn_table_swap_nodes_data(dict, posDictPere, posMin);
+            tree_swap_nodes_data(node, nodeTreeMin);
+            tree_heap_update_downwards(H, nodeTreeMin);
+        }
+    }
 }
 
-void view_tree_heap(const struct heap_t * H, void (*viewHeapNode)(const void *))
+struct heap_node_t * tree_heap_extract_min(struct heap_t * H)
 {
     assert(H);
     assert(get_heap(H));
-    struct tree_t * heapTree = get_heap(H);
-    view_tree(heapTree,viewHeapNode,0);
+    assert(get_heap_dictionary(H));
+    struct tree_t * treeHeap = get_heap(H);
+    struct heap_node_t * heapNodeMin =  get_tree_node_data(get_tree_root(treeHeap));
+    struct tree_node_t * lastNode = tree_find_node(treeHeap,get_tree_size(treeHeap)-1);
+    
+}
+
+int tree_heap_is_empty(const void* H)
+{
+    assert(H);
+    assert(get_heap(H));
+    return tree_is_empty(get_heap(H));
+}
+
+void delete_tree_heap(struct heap_t* H, void (*freeHeapNode)(void*))
+{
+    assert(H);
+    assert(get_heap(H));
+    assert(get_heap_dictionary(H));
+    delete_tree(get_heap(H), freeHeapNode);
+    delete_dyn_table(get_heap_node_dict_position(H), freeInt);
+    free(H);
+}
+
+void view_tree_heap(const struct heap_t* H, void (*viewHeapNode)(const void*))
+{
+    assert(H);
+    assert(get_heap(H));
+    struct tree_t* heapTree = get_heap(H);
+    view_tree(heapTree, viewHeapNode, 0);
 }
 
 /**********************************************************************************
