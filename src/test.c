@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+
+#include "../include/algo.h"
 #include "../include/util.h"
 #include "../include/list.h"
 #include "../include/dyntable.h"
@@ -656,7 +658,7 @@ void testListHeapInsert()
     assert(list_is_empty(heapList));
     assert(get_dyn_table_data(dict,2)==NULL);
 
-    view_list_heap(H, viewInt);
+    // view_list_heap(H, viewInt);
     // view_dyn_table(dict,viewHeapNodeIntInListNode);
 
     list_heap_insert(H, key5, data5);
@@ -915,14 +917,19 @@ void testViewDyntableHeap()
     unsigned long key4 = 15;
 
     int* data5 = calloc(1, sizeof(int));
-    *data4 = 7;
+    *data5 = 7;
     unsigned long key5 = 1;
     struct heap_t* h = new_heap(0);
     struct dyn_table_t* dynTableHeap = get_heap(h);
     dyn_table_heap_insert(h, key1, data1);
     dyn_table_heap_insert(h, key2, data2);
     dyn_table_heap_insert(h, key3, data3);
+
+    // view_dyn_table_heap(h,viewHeapNode);
+    // view_dyn_table(get_heap_dictionary(h),viewInt);
     dyn_table_heap_insert(h, key4, data4);
+    // view_dyn_table_heap(h,viewHeapNode);
+    // view_dyn_table(get_heap_dictionary(h),viewInt);
     dyn_table_heap_insert(h, key5, data5);
 
     // view_dyn_table_heap(h,viewHeapNode);
@@ -1059,7 +1066,9 @@ void test_tree_heap_extract_min()
     struct tree_t* t = get_heap(h);
     struct dyn_table_t* dict = get_heap_dictionary(h);
 
+    assert(tree_heap_is_empty(h));
     tree_heap_insert(h, key1, data1);
+    assert(!tree_heap_is_empty(h));
     tree_heap_insert(h, key2, data2);
     tree_heap_insert(h, key3, data3);
     tree_heap_insert(h, key4, data4);
@@ -1122,6 +1131,18 @@ void test_graph(char * filename)
     view_list(get_graph_edges(G),view_edge);
 }
 
+void testDjikstra(char * filename)
+{
+    graph G = read_graph(filename);
+    // printf("BEFORE DJIKSTRA\n");
+    // view_dyn_table(G,view_vertex);
+    Dijkstra(G,"LA",1);
+    // printf("AFTER DJIKSTRA\n");
+    // view_dyn_table(G,view_vertex);
+    view_solution(G,"LA");
+
+}
+
 int main(int argc,char** argv)
 {
 
@@ -1157,6 +1178,7 @@ int main(int argc,char** argv)
     runTest("test_edge",test_edge);
     // runTest("Test_graph",test_graph);
     // test_graph(argv[1]);
+    testDjikstra(argv[1]);
 
     return 0;
 }

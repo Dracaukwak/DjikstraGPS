@@ -417,10 +417,13 @@ struct heap_node_t * tree_heap_extract_min(struct heap_t * H)
     set_dyn_table_data(dict,dictPosMin,NULL);
     tree_swap_nodes_data(minNode,lastNode);
 
+    struct tree_node_t* noeudRacine = get_tree_root(treeHeap);
     struct heap_node_t* minHeapNode = tree_remove(treeHeap);
-    tree_heap_update_downwards(H,get_tree_root(treeHeap));
+    tree_heap_update_downwards(H,noeudRacine);
     return minHeapNode;
 }
+
+
 
 int tree_heap_is_empty(const void* H)
 {
@@ -435,7 +438,6 @@ void delete_tree_heap(struct heap_t* H, void (*freeHeapNode)(void*))
     assert(get_heap(H));
     assert(get_heap_dictionary(H));
     delete_tree(get_heap(H), freeHeapNode);
-    delete_dyn_table(get_heap_node_dict_position(H), freeInt);
     free(H);
 }
 

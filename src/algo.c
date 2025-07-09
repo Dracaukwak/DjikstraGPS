@@ -13,24 +13,81 @@
 
 #define INFINITY ULONG_MAX
 
-void Dijkstra(graph G, const char * source_name, int heap_type)
+void Dijkstra(graph G, const char* source_name, int heap_type)
 {
-    struct heap_t * heap = new_heap(heap_type);
+    struct heap_t* heap = new_heap(heap_type);
 
-    for (int i = 0; i < get_dyn_table_used(G);i++)
+    printf("hello taille gaphe = %d",get_dyn_table_used(G));
+    for (int i = 0; i < get_dyn_table_used(G); i++)
     {
-        if (strcmp(get_vertex_id(get_dyn_table_data(G,i)),source_name) == 0)
+        struct vertex_t* v = get_dyn_table_data(G, i);
+        if (strcmp(get_vertex_id(v), source_name) == 0)
         {
-            struct vertex_t * depart = get_dyn_table_data(G,i);
-            set_vertex_total_distance(depart,0);
-            unsigned int dictPos = heap->heap_insert(heap,get_vertex_total_distance(depart),depart);
-            set_vertex_dict_position(depart,dictPos);
+            set_vertex_total_distance(v, 0);
         }
+        unsigned int dictPos = heap->heap_insert(heap, get_vertex_total_distance(v), v);
+        set_vertex_dict_position(v, dictPos);
     }
+
+    // printf("hello");
+    // switch (heap_type)
+    // {
+    // case 0:
+    //     printf("la tab mesure %d\n",get_dyn_table_used(get_heap(heap)));
+    //     break;
+    // case 1:
+    //     printf("labre meseure %d\n",get_tree_size(get_heap(heap)));
+    //     break;
+    // case 2:
+    //     printf("la liste meseure %d\n",get_list_size(get_heap(heap)));
+    //     break;
+    // }
 
     while (!heap->heap_is_empty(heap))
     {
+        struct heap_node_t* temp = heap->heap_extract_min(heap);
+        struct vertex_t* U = get_heap_node_data(temp);
+        struct list_t* adjacents = get_vertex_incidence_list(U);
 
+        for (struct list_node_t* it = get_list_head(adjacents); it != NULL; it = get_successor(it))
+        {
+            struct edge_t* E = get_list_node_data(it);
+            struct vertex_t* V;
+            if (get_edge_endpoint_U(E) == U)
+            {
+                V = get_edge_endpoint_V(E);
+            }
+            else
+            {
+                V = get_edge_endpoint_U(E);
+            }
+            unsigned long distanceU = get_vertex_total_distance(U);
+            unsigned long distanceV = get_vertex_total_distance(V);
+            unsigned long poids = get_edge_distance(E);
+            if (distanceU + poids < distanceV)
+            {
+                set_vertex_total_distance(V, distanceU + poids);
+                set_vertex_predecessor(V, U);
+                heap->heap_increase_priority(heap, get_vertex_dict_position(V), distanceU + poids);
+            }
+        }
+        free(temp);
     }
+    heap->delete_heap(heap,NULL);
+}
 
+void view_solution(graph G, const char* source_name)
+{
+    printf("SOLUTION\n");
+    printf("%u\n", get_dyn_table_used(G));
+    printf("%s\n", source_name);
+    for (unsigned int v = 0; v < get_dyn_table_used(G); v++)
+    {
+        struct vertex_t* V = get_dyn_table_data(G, v);
+        if (strcmp(get_vertex_id(V), source_name) != 0)
+        {
+            printf("%s %lu %s\n", get_vertex_id(get_vertex_predecessor(V)), get_vertex_total_distance(V),
+                   get_vertex_id(V));
+        }
+    }
 }

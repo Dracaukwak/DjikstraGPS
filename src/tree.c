@@ -107,7 +107,7 @@ void free_subtree(struct tree_node_t* node, void (*freeData)(void*))
     {
         free_subtree(get_left(node), freeData);
         free_subtree(get_right(node), freeData);
-        if (freeData)
+        if (freeData && get_tree_node_data(node) != NULL)
         {
             freeData(get_tree_node_data(node));
         }
