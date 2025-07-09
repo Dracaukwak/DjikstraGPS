@@ -120,7 +120,7 @@ void delete_tree(struct tree_t* T, void (*freeData)(void*))
     assert(T);
     free_subtree(get_tree_root(T), freeData);
     free(T);
-    printf("Arbre detruit !\n");
+    // printf("Arbre detruit !\n");
 }
 
 void view_preorder(const struct tree_node_t* node, void (*viewData)(const void*))

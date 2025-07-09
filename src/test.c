@@ -1096,11 +1096,11 @@ void test_vertex()
     struct vertex_t* v1 = new_vertex(ville1);
     struct vertex_t* v2 = new_vertex(ville2);
 
-    struct edge_t *e = new_edge(v1,v2,15);
+    struct edge_t* e = new_edge(v1, v2, 15);
     struct vertex_t* v = new_vertex(ville);
     set_vertex_dict_position(v, 0);
     set_vertex_total_distance(v, 10);
-    vertex_add_incident_edge(v,e);
+    vertex_add_incident_edge(v, e);
     assert(!list_is_empty(get_vertex_incidence_list(v)));
     assert(get_vertex_predecessor(v)==NULL);
     assert(get_vertex_total_distance(v)==10);
@@ -1117,35 +1117,40 @@ void test_edge()
     struct vertex_t* v1 = new_vertex(ville1);
     struct vertex_t* v2 = new_vertex(ville2);
 
-    struct edge_t *e = new_edge(v1,v2,15);
+    struct edge_t* e = new_edge(v1, v2, 15);
     assert(get_edge_endpoint_U(e) == v1);
     assert(get_edge_endpoint_V(e) == v2);
     assert(get_edge_distance(e)==15);
     // view_edge(e);
 }
 
-void test_graph(char * filename)
+void test_graph(char* filename)
 {
     graph G = read_graph(filename);
     view_graph(G);
-    view_list(get_graph_edges(G),view_edge);
+    view_list(get_graph_edges(G), view_edge);
 }
 
-void testDjikstra(char * filename)
+void testDjikstra(char* filename)
 {
+    // printf("nom fichier : %s",filename);
     graph G = read_graph(filename);
     // printf("BEFORE DJIKSTRA\n");
     // view_dyn_table(G,view_vertex);
-    Dijkstra(G,"LA",1);
+    char villeDepart[10] = "Metz";
+    for (int i = 0; i < 3; i++)
+    {
+        Dijkstra(G, villeDepart, i);
+        view_solution(G, villeDepart);
+    }
+
     // printf("AFTER DJIKSTRA\n");
     // view_dyn_table(G,view_vertex);
-    view_solution(G,"LA");
-
+    save_solution("../data/Pikabou3.txt", G, villeDepart);
 }
 
-int main(int argc,char** argv)
+int main(int argc, char** argv)
 {
-
     runTest("utils.c", testUtils);
     runTest("listNode", testListNode);
     runTest("liste getteurAndsetteur", testGetteurAndSetteurList);
@@ -1175,7 +1180,7 @@ int main(int argc,char** argv)
     runTest("Test tree_heap_increase_priority", test_tree_heap_increase_priority);
     runTest("test_tree_heap_extract_min", test_tree_heap_extract_min);
     runTest("test_vertex", test_vertex);
-    runTest("test_edge",test_edge);
+    runTest("test_edge", test_edge);
     // runTest("Test_graph",test_graph);
     // test_graph(argv[1]);
     testDjikstra(argv[1]);

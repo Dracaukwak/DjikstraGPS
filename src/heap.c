@@ -211,10 +211,14 @@ void dyn_table_heap_update_downwards(struct heap_t* H, unsigned int position)
         }
         if (posMin != position)
         {
+            printf("pos min %d\n",posMin);
+            unsigned int posDicoFils = get_heap_node_dict_position(get_dyn_table_data(dyntableHeap,posMin));
+            unsigned int posDicoPere = get_heap_node_dict_position(get_dyn_table_data(dyntableHeap,position));
+            dyn_table_swap_nodes_data(dict,posDicoFils,posDicoPere);
             dyn_table_swap_nodes_data(dyntableHeap, position, posMin);
-            unsigned int posFilsMinDict = *(int*)get_dyn_table_data(dict, posMin);
-            unsigned int posPereDict = *(int*)get_dyn_table_data(dict, position);
-            dyn_table_swap_nodes_data(dict, posFilsMinDict, posPereDict);
+            // unsigned int posFilsMinDict = *(int*)get_dyn_table_data(dict, posMin);
+            // unsigned int posPereDict = *(int*)get_dyn_table_data(dict, position);
+            // dyn_table_swap_nodes_data(dict, posFilsMinDict, posPereDict);
             dyn_table_heap_update_downwards(H, posMin);
         }
     }

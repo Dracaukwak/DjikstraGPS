@@ -15,9 +15,20 @@
 
 void Dijkstra(graph G, const char* source_name, int heap_type)
 {
+    switch (heap_type)
+    {
+    case 0:
+        printf("DIJKSTRA TAS TABLEAU\n");
+        break;
+    case 1:
+        printf("DIJKSTRA TAS ARBRE\n");
+        break;
+    case 2:
+        printf("DIJKSTRA TAS LISTE\n");
+        break;
+    }
     struct heap_t* heap = new_heap(heap_type);
 
-    printf("hello taille gaphe = %d",get_dyn_table_used(G));
     for (int i = 0; i < get_dyn_table_used(G); i++)
     {
         struct vertex_t* v = get_dyn_table_data(G, i);
@@ -28,7 +39,7 @@ void Dijkstra(graph G, const char* source_name, int heap_type)
         unsigned int dictPos = heap->heap_insert(heap, get_vertex_total_distance(v), v);
         set_vertex_dict_position(v, dictPos);
     }
-    
+
     while (!heap->heap_is_empty(heap))
     {
         struct heap_node_t* temp = heap->heap_extract_min(heap);
@@ -72,8 +83,28 @@ void view_solution(graph G, const char* source_name)
         struct vertex_t* V = get_dyn_table_data(G, v);
         if (strcmp(get_vertex_id(V), source_name) != 0)
         {
-            printf("%s %lu %s\n", get_vertex_id(get_vertex_predecessor(V)), get_vertex_total_distance(V),
-                   get_vertex_id(V));
+            printf("%s %lu %s\n",get_vertex_id(V), get_vertex_total_distance(V),get_vertex_id(get_vertex_predecessor(V)));
+        }
+    }
+}
+
+void save_solution(const char* out_filename, graph G, const char* source_name)
+{
+    assert(G);
+    FILE* fd;
+    if ((fd = fopen(out_filename, "w")) == NULL)
+    {
+        ShowMessage("algo:save_solution : Error while open out file", 1);
+    }
+    fprintf(fd, "%u\n", get_dyn_table_used(G));
+    fprintf(fd, "%s\n", source_name);
+    for (unsigned int v = 0; v < get_dyn_table_used(G); v++)
+    {
+        struct vertex_t* V = get_dyn_table_data(G, v);
+        if (strcmp(get_vertex_id(V), source_name) != 0)
+        {
+            fprintf(fd, "%s %u %s\n", get_vertex_id(V), get_vertex_total_distance(V),
+                    get_vertex_id(get_vertex_predecessor(V)));
         }
     }
 }
