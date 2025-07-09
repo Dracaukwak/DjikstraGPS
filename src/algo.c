@@ -28,21 +28,7 @@ void Dijkstra(graph G, const char* source_name, int heap_type)
         unsigned int dictPos = heap->heap_insert(heap, get_vertex_total_distance(v), v);
         set_vertex_dict_position(v, dictPos);
     }
-
-    // printf("hello");
-    // switch (heap_type)
-    // {
-    // case 0:
-    //     printf("la tab mesure %d\n",get_dyn_table_used(get_heap(heap)));
-    //     break;
-    // case 1:
-    //     printf("labre meseure %d\n",get_tree_size(get_heap(heap)));
-    //     break;
-    // case 2:
-    //     printf("la liste meseure %d\n",get_list_size(get_heap(heap)));
-    //     break;
-    // }
-
+    
     while (!heap->heap_is_empty(heap))
     {
         struct heap_node_t* temp = heap->heap_extract_min(heap);
