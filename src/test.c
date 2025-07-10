@@ -1137,7 +1137,7 @@ void testDjikstra(char* filename)
     graph G = read_graph(filename);
     // printf("BEFORE DJIKSTRA\n");
     // view_dyn_table(G,view_vertex);
-    char villeDepart[10] = "Metz";
+    char villeDepart[10] = "SF";
     for (int i = 0; i < 3; i++)
     {
         Dijkstra(G, villeDepart, i);
