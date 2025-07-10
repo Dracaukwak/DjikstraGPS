@@ -70,7 +70,9 @@ if [ $3 -lt 0 ] || [ $3 -gt 100 ]; then
   exit 1
 fi
 
-
+filename=$1
+nbVertice=$2
+density=$3
 
 
 # GÉNÉRATION DES SOMMETS
@@ -111,3 +113,34 @@ fi
 # Indication : sauvegarder les arêtes générées avec leurs distances dans un
 # tableau associatif initialement vide.
 
+
+# ÉCRITURE DES DONNÉES GÉNÉRÉES AU FICHIER
+#
+# Format du fichier donné à la présentation du cours
+
+
+# --- ÉCRITURE du nombre de sommet et des sommets ---
+
+echo $nbVertice >> $filename
+seq -w 1 $nbVertice >> $filename
+
+declare -A tabArete
+
+for i in $(seq -w 1 $nbVertice); do
+  for j in $(seq -w $i $nbVertice); do
+        randomNumber=$(getNormalDistributionSample 0 100)
+        if [ $randomNumber -le $density ]; then
+          tabArete[$i $j]=$(getParetoDistributionSample)
+        fi
+  done
+done
+
+# --- ÉCRITURE du nombre d'arètes dans le fichier ---
+
+echo ${#tabArete[@]} >> $filename
+
+# --- ÉCRITURE des arètes dans le fichier ---
+
+for cle in "${!tabArete[@]}"; do
+  echo "$cle ${tabArete[$cle]}" >> $filename
+done

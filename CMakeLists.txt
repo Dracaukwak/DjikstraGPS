@@ -14,4 +14,5 @@ add_executable(test src/test.c
         src/heap.c
         src/graph.c
         src/algo.c
+        src/expe.c
 )
