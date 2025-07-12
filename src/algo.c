@@ -15,18 +15,18 @@
 
 void Dijkstra(graph G, const char* source_name, int heap_type)
 {
-    switch (heap_type)
-    {
-    case 0:
-        printf("DIJKSTRA TAS TABLEAU\n");
-        break;
-    case 1:
-        printf("DIJKSTRA TAS ARBRE\n");
-        break;
-    case 2:
-        printf("DIJKSTRA TAS LISTE\n");
-        break;
-    }
+    // switch (heap_type)
+    // {
+    // case 0:
+    //     printf("DIJKSTRA TAS TABLEAU\n");
+    //     break;
+    // case 1:
+    //     printf("DIJKSTRA TAS ARBRE\n");
+    //     break;
+    // case 2:
+    //     printf("DIJKSTRA TAS LISTE\n");
+    //     break;
+    // }
     struct heap_t* heap = new_heap(heap_type);
 
     for (int i = 0; i < get_dyn_table_used(G); i++)
