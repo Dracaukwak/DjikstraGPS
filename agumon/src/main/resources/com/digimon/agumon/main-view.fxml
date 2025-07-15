@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.digimon.agumon.MainController">
+   <children>
+      <Label layoutX="14.0" layoutY="34.0" text="Ville Source">
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </Label>
+      <TextField id="sourceField" fx:id="sourceField" layoutX="108.0" layoutY="35.0" />
+      <Button layoutX="14.0" layoutY="84.0" mnemonicParsing="false" onAction="#onRunDijkstra" text="Lancer Dijkstra" />
+      <Button layoutX="14.0" layoutY="119.0" mnemonicParsing="false" onAction="#onFileChoose" text="Choisir un fichier" />
+      <TextField fx:id="filePathField" editable="false" layoutX="151.0" layoutY="119.0" />
+      <TextArea fx:id="zoneSolution" layoutX="359.0" layoutY="144.0" prefHeight="200.0" prefWidth="200.0" />
+      <RadioButton layoutX="18.0" layoutY="176.0" mnemonicParsing="false" text="Dyntable">
+         <toggleGroup>
+            <ToggleGroup fx:id="btnRadio" />
+         </toggleGroup></RadioButton>
+      <RadioButton fx:id="treeRadio" layoutX="18.0" layoutY="200.0" mnemonicParsing="false" text="Tree" toggleGroup="$btnRadio" />
+      <RadioButton fx:id="listRadio" layoutX="18.0" layoutY="227.0" mnemonicParsing="false" text="List" toggleGroup="$btnRadio" />
+      <Label layoutX="18.0" layoutY="152.0" text="Type" />
+   </children>
+</AnchorPane>
