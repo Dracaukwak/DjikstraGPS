@@ -16,7 +16,7 @@ JNIEXPORT void JNICALL Java_com_digimon_agumon_appelDjikstra_runDjikstra
     graph G = read_graph(c_graph_filename);
     Dijkstra(G, c_source, heap_type);
     save_solution(c_solution_filename, G, c_source);
-    view_solution(G, c_source);
+    // view_solution(G, c_source);
     // printf("Hello mon pote");
 
     (*env)->ReleaseStringUTFChars(env, graph_filename, c_graph_filename);
