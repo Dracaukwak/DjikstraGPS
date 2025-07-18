@@ -1,9 +1,7 @@
 package com.digimon.agumon;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -14,8 +12,6 @@ public class mainApp extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-
-
         Scene scene = new Scene(loader.load());
         stage.setTitle("Dijkstra");
         stage.setScene(scene);
