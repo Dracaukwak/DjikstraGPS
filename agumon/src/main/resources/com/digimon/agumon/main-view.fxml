@@ -16,20 +16,22 @@
       <Button layoutX="14.0" layoutY="119.0" mnemonicParsing="false" onAction="#onFileChoose" text="Choisir un fichier" />
       <TextField fx:id="filePathField" editable="false" layoutX="151.0" layoutY="119.0" />
       <TextArea fx:id="zoneSolution" layoutX="363.0" layoutY="56.0" prefHeight="200.0" prefWidth="200.0" />
-      <RadioButton fx:id="dyntableRadio" layoutX="18.0" layoutY="176.0" mnemonicParsing="false" text="Dyntable">
+      <RadioButton fx:id="dyntableRadio" layoutX="9.0" layoutY="247.0" mnemonicParsing="false" text="Dyntable">
          <toggleGroup>
             <ToggleGroup fx:id="btnRadio" />
          </toggleGroup></RadioButton>
-      <RadioButton fx:id="treeRadio" layoutX="18.0" layoutY="200.0" mnemonicParsing="false" text="Tree" toggleGroup="$btnRadio" />
-      <RadioButton fx:id="listRadio" layoutX="18.0" layoutY="227.0" mnemonicParsing="false" text="List" toggleGroup="$btnRadio" />
-      <Label layoutX="18.0" layoutY="152.0" text="Type" />
+      <RadioButton fx:id="treeRadio" layoutX="9.0" layoutY="272.0" mnemonicParsing="false" text="Tree" toggleGroup="$btnRadio" />
+      <RadioButton fx:id="listRadio" layoutX="11.0" layoutY="297.0" mnemonicParsing="false" text="List" toggleGroup="$btnRadio" />
+      <Label layoutX="18.0" layoutY="218.0" text="Type" />
       <Pane fx:id="canvas" layoutX="88.0" layoutY="266.0" prefHeight="369.0" prefWidth="806.0" />
       <Button layoutX="825.0" layoutY="35.0" mnemonicParsing="false" onAction="#quitter" style="-fx-background-radius: 20px; -fx-background-color: red;" text="Quitter" />
       <Button layoutX="827.0" layoutY="119.0" mnemonicParsing="false" onAction="#lancerAnimation" text="Chaos" />
       <Button layoutX="827.0" layoutY="156.0" mnemonicParsing="false" onAction="#arreterAnimation" text=" Stop animation" />
       <Button layoutX="827.0" layoutY="84.0" mnemonicParsing="false" onAction="#lancerForce" text="Force" />
-      <Button layoutX="157.0" layoutY="169.0" mnemonicParsing="false" onAction="#chargerPlanete" text="Charger les planètos" />
+      <Button layoutX="687.0" layoutY="119.0" mnemonicParsing="false" onAction="#chargerPlanete" text="Charger les planètos" />
       <Label layoutX="397.0" layoutY="14.0" prefHeight="17.0" prefWidth="125.0" style="-fx-alignment: center;" text="Solution" />
-      <Button layoutX="163.0" layoutY="214.0" mnemonicParsing="false" onAction="#nettoyerPane" text="Supprimer graphe" />
+      <Button layoutX="687.0" layoutY="156.0" mnemonicParsing="false" onAction="#nettoyerPane" text="Supprimer graphe" />
+      <Button layoutX="16.0" layoutY="168.0" mnemonicParsing="false" onAction="#sauvegardeFichier" text="Sauvegarder graphe" />
+      <TextField fx:id="choixFichier" layoutX="162.0" layoutY="168.0" />
    </children>
 </AnchorPane>

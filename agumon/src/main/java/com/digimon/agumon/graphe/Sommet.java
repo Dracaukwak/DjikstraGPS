@@ -1,5 +1,6 @@
 package com.digimon.agumon.graphe;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
@@ -12,6 +13,24 @@ public class Sommet {
     private int distance;
     private Circle cercle;
     private Text texte;
+    private boolean selected;
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public static Sommet getSommetSelected(ArrayList<Sommet> sommets) {
+        for (Sommet s : sommets) {
+            if (s.isSelected()) {
+                return s;
+            }
+        }
+        return null;
+    }
 
 
     public Text getTexte() {
@@ -46,8 +65,15 @@ public class Sommet {
         this.predecesseur = pred;
     }
 
+    public Sommet(String nom, double x, double y) {
+        setNom(nom);
+        texte = new Text(x + 10, y, nom);
+        this.cercle = new Circle(x, y, 8, Color.CHOCOLATE);
+    }
+
     public Sommet(String nom) {
         this.nom = nom;
+        cercle = new Circle();
     }
 
     private void validerNom(String nom) {

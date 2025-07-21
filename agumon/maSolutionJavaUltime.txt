@@ -1,11 +1,4 @@
-10
-Valence
-Paris 570 Lyon
-Lyon 104 Valence
-Metz 572 Nancy
-Nancy 517 Dijon
-Reims 591 Dijon
-Grenoble 92 Valence
-Chambery 128 Valence
-Dijon 300 Lyon
-Besançon 331 Lyon
+3
+NY
+SF 4683 NY
+LA 4497 NY

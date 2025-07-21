@@ -1,5 +1,6 @@
 package com.digimon.agumon.graphe;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 
@@ -16,11 +17,20 @@ public class Arete {
         this.a = a;
         this.b = b;
         this.distance = distance;
+        double posAx = a.getCercle().getCenterX();
+        double posAy = a.getCercle().getCenterY();
+        double posBx = b.getCercle().getCenterX();
+        double posBy = b.getCercle().getCenterY();
+        double midX = (posAx + posBx) / 2;
+        double midY = (posAy + posBy) / 2;
+        line = new Line(posAx, posAy, posBx, posBy);
+        line.setStroke(Color.GRAY);
+        texteDistance = new Text(midX, midY, Double.toString(getDistance()));
     }
 
-    static public Arete getArete(ArrayList<Arete> aretes,Sommet a, Sommet b){
-        for (Arete ar : aretes){
-            if((ar.getA().equals(a) && ar.getB().equals(b) )|| (ar.getA().equals(b) && ar.getB().equals(a))){
+    static public Arete getArete(ArrayList<Arete> aretes, Sommet a, Sommet b) {
+        for (Arete ar : aretes) {
+            if ((ar.getA().equals(a) && ar.getB().equals(b)) || (ar.getA().equals(b) && ar.getB().equals(a))) {
                 return ar;
             }
         }
@@ -28,18 +38,18 @@ public class Arete {
         return null;
     }
 
-    static public void updateLine(Sommet a, Sommet b,Line line) {
+    static public void updateLine(Sommet a, Sommet b, Line line) {
         line.setStartX(a.getCercle().getCenterX());
         line.setStartY(a.getCercle().getCenterY());
         line.setEndX(b.getCercle().getCenterX());
         line.setEndY(b.getCercle().getCenterY());
     }
 
-    static public void updateAllLines(ArrayList<Arete> aretes){
-        for(Arete ar : aretes){
+    static public void updateAllLines(ArrayList<Arete> aretes) {
+        for (Arete ar : aretes) {
             Sommet a = ar.getA();
             Sommet b = ar.getB();
-            updateLine(a,b,ar.getLine());
+            updateLine(a, b, ar.getLine());
         }
     }
 

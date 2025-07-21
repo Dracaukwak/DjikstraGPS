@@ -1,6 +1,7 @@
 package com.digimon.agumon;
 
 
+import com.digimon.agumon.Evenement.CanvasEvenement;
 import com.digimon.agumon.Physique.Interaction;
 import com.digimon.agumon.graphe.Arete;
 import com.digimon.agumon.graphe.Chargeur;
@@ -20,8 +21,7 @@ import javafx.stage.Stage;
 
 import javafx.scene.control.TextArea;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,11 +45,15 @@ public class MainController {
     @FXML
     private Pane canvas;
 
+    @FXML
+    private TextField choixFichier;
+
     private int heapType = 0;
 
     private AnimationTimer animation;
 
-
+    private ArrayList<Sommet> sommetsPerso = new ArrayList<>();
+    private ArrayList<Arete> aretesPerso = new ArrayList<>();
     private ArrayList<Sommet> villes = new ArrayList<>();
     private ArrayList<Arete> aretes = new ArrayList<>();
     private ArrayList<Planete> planetes = new ArrayList<>();
@@ -81,7 +85,13 @@ public class MainController {
     }
 
     @FXML
-    private void nettoyerPane(){
+    public void initialize() {
+        CanvasEvenement.createSommetOnClick(canvas, sommetsPerso, aretesPerso);
+    }
+
+
+    @FXML
+    private void nettoyerPane() {
         GrapheRenderer.clearGraphe(canvas);
     }
 
@@ -89,13 +99,13 @@ public class MainController {
     private void onRunDijkstra() {
 
         String villeSource = sourceField.getText().trim();
-        if(villeSource.trim().isEmpty()){
-            sourceField.setText("Entrer une ville source !!");
+        if (villeSource.trim().isEmpty()) {
+//            sourceField.setText("Entrer une ville source !!");
             return;
         }
         System.out.println("Ville de départ choisie :" + villeSource);
         String cheminSource = filePathField.getText();
-        if(cheminSource.trim().isEmpty()){
+        if (cheminSource.trim().isEmpty()) {
             zoneSolution.setText("Entrer un fichier !!!");
             return;
         }
@@ -106,15 +116,14 @@ public class MainController {
         afficheTypeTas();
 
         d.runDjikstra(cheminSource, fichierSorti, villeSource, heatType);
-        ArrayList<Arete> solution = Chargeur.chargerSolutionDepuisFichier(fichierSorti,villes,aretes);
+        ArrayList<Arete> solution = Chargeur.chargerSolutionDepuisFichier(fichierSorti, villes, aretes);
         Path path = Paths.get(fichierSorti);
-//
         try {
             String content = Files.readString(path);
             System.out.println("Le fichier contient :");
             System.out.println(content);
-            GrapheRenderer.resetGraph(aretes,villes);
-            GrapheRenderer.appliquerDijkstra(solution,villeSource,villes);
+            GrapheRenderer.resetGraph(aretes, villes);
+            GrapheRenderer.appliquerDijkstra(solution, villeSource, villes);
             zoneSolution.setText(content);
 
 
@@ -143,7 +152,40 @@ public class MainController {
     private void chargerPlanete() {
         String chemin = "C:\\Users\\jorda\\CLionProjects\\DjikstraGPS\\agumon\\src\\main\\java\\com\\digimon\\agumon\\planetes.txt";
         planetes = Chargeur.chargerPlaneteDepuisFichier(chemin);
-        GrapheRenderer.afficherPlanete(canvas,planetes);
+        GrapheRenderer.afficherPlanete(canvas, planetes);
+    }
+
+    @FXML
+    public void sauvegardeFichier() {
+        if (choixFichier.getText().isEmpty()) {
+            System.out.println("pas de fichier");
+            return;
+        }
+        try {
+            ecrireDansFichier(choixFichier.getText());
+        } catch (IOException e) {
+            System.err.println("Erreur " + e.getMessage());
+        }
+
+
+    }
+
+    private void ecrireDansFichier(String nomFichier) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(nomFichier));
+        bw.write(Integer.toString(sommetsPerso.size()));
+        bw.newLine();
+        for (Sommet s : sommetsPerso) {
+            bw.write(s.getNom());
+            bw.newLine();
+        }
+        bw.write(Integer.toString(aretesPerso.size()));
+        bw.newLine();
+        for (Arete a : aretesPerso) {
+            String ligne = a.getA().getNom() + " " + a.getB().getNom() + " " + a.getDistance();
+            bw.write(ligne);
+            bw.newLine();
+        }
+        bw.close();
     }
 
     @FXML
